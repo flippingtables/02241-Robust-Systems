@@ -3,13 +3,16 @@ STAT Hellerup h
 STAT Lyngby l
 STAT Klampenborg k
 STAT Ost300 o
+STAT Julemand 1
 # some connections
 CONN h b
 CONN b l
 CONN b k
 CONN k o
+CONN o 1
 # some end points
 END h
 END l
 END k
 END o
+END 1
