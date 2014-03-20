@@ -1,0 +1,12 @@
+# some stations
+STAT Hellerup h
+STAT Lyngby l
+STAT Klampenborg k
+# some connections
+CONN h b
+CONN b l
+CONN b k
+# some end points
+END h
+END l
+END k
