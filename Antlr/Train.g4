@@ -7,5 +7,5 @@ WS : [ \t\r\n]+ -> skip ;             // skip spaces, tabs, newlines
 station : 'STAT' STRING ID ;          // match keyword hello followed by an identifier
 connect : 'CONN' ID ID ;
 end : 'END' ID ;
-comments : '#' STRING ;
+comments : '#' STRING+;
 

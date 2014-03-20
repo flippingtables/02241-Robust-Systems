@@ -275,7 +275,10 @@ public class TrainParser extends Parser {
 	}
 
 	public static class CommentsContext extends ParserRuleContext {
-		public TerminalNode STRING() { return getToken(TrainParser.STRING, 0); }
+		public TerminalNode STRING(int i) {
+			return getToken(TrainParser.STRING, i);
+		}
+		public List<TerminalNode> STRING() { return getTokens(TrainParser.STRING); }
 		public CommentsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -294,10 +297,29 @@ public class TrainParser extends Parser {
 		CommentsContext _localctx = new CommentsContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_comments);
 		try {
+			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(36); match(4);
-			setState(37); match(STRING);
+			setState(38); 
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+			do {
+				switch (_alt) {
+				case 1:
+					{
+					{
+					setState(37); match(STRING);
+					}
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(40); 
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+			} while ( _alt!=2 && _alt!=-1 );
 			}
 		}
 		catch (RecognitionException re) {
@@ -325,17 +347,18 @@ public class TrainParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\t*\4\2\t\2\4\3\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\t-\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2\3\2\3\2\3\2\5\2\23\n\2\3\2\3\2"+
 		"\7\2\27\n\2\f\2\16\2\32\13\2\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\5\3\5\3"+
-		"\5\3\6\3\6\3\6\3\6\2\3\2\7\2\4\6\b\n\2\2)\2\22\3\2\2\2\4\33\3\2\2\2\6"+
-		"\37\3\2\2\2\b#\3\2\2\2\n&\3\2\2\2\f\r\b\2\1\2\r\23\5\4\3\2\16\23\5\6\4"+
-		"\2\17\23\5\b\5\2\20\23\5\n\6\2\21\23\7\t\2\2\22\f\3\2\2\2\22\16\3\2\2"+
-		"\2\22\17\3\2\2\2\22\20\3\2\2\2\22\21\3\2\2\2\23\30\3\2\2\2\24\25\f\5\2"+
-		"\2\25\27\5\2\2\2\26\24\3\2\2\2\27\32\3\2\2\2\30\26\3\2\2\2\30\31\3\2\2"+
-		"\2\31\3\3\2\2\2\32\30\3\2\2\2\33\34\7\3\2\2\34\35\7\7\2\2\35\36\7\b\2"+
-		"\2\36\5\3\2\2\2\37 \7\4\2\2 !\7\b\2\2!\"\7\b\2\2\"\7\3\2\2\2#$\7\5\2\2"+
-		"$%\7\b\2\2%\t\3\2\2\2&\'\7\6\2\2\'(\7\7\2\2(\13\3\2\2\2\4\22\30";
+		"\5\3\6\3\6\6\6)\n\6\r\6\16\6*\3\6\2\3\2\7\2\4\6\b\n\2\2-\2\22\3\2\2\2"+
+		"\4\33\3\2\2\2\6\37\3\2\2\2\b#\3\2\2\2\n&\3\2\2\2\f\r\b\2\1\2\r\23\5\4"+
+		"\3\2\16\23\5\6\4\2\17\23\5\b\5\2\20\23\5\n\6\2\21\23\7\t\2\2\22\f\3\2"+
+		"\2\2\22\16\3\2\2\2\22\17\3\2\2\2\22\20\3\2\2\2\22\21\3\2\2\2\23\30\3\2"+
+		"\2\2\24\25\f\5\2\2\25\27\5\2\2\2\26\24\3\2\2\2\27\32\3\2\2\2\30\26\3\2"+
+		"\2\2\30\31\3\2\2\2\31\3\3\2\2\2\32\30\3\2\2\2\33\34\7\3\2\2\34\35\7\7"+
+		"\2\2\35\36\7\b\2\2\36\5\3\2\2\2\37 \7\4\2\2 !\7\b\2\2!\"\7\b\2\2\"\7\3"+
+		"\2\2\2#$\7\5\2\2$%\7\b\2\2%\t\3\2\2\2&(\7\6\2\2\')\7\7\2\2(\'\3\2\2\2"+
+		")*\3\2\2\2*(\3\2\2\2*+\3\2\2\2+\13\3\2\2\2\5\22\30*";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

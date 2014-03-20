@@ -7,6 +7,6 @@ CONN b k
 END h
 END l
 END k
-# somestations
-# someconnections
-# someendpoints
+# some stations
+# some connections
+# some end points
