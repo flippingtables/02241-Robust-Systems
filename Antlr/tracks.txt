@@ -1,12 +1,15 @@
+# some stations
 STAT Hellerup h
 STAT Lyngby l
 STAT Klampenborg k
+STAT Ost300 o
+# some connections
 CONN h b
 CONN b l
 CONN b k
+CONN k o
+# some end points
 END h
 END l
 END k
-# some stations
-# some connections
-# some end points
+END o
