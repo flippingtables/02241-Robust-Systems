@@ -1,4 +1,4 @@
-package foo;
+package parser;
 
 /**
  * Hello world!

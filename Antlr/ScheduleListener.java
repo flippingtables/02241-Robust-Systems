@@ -8,26 +8,26 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface ScheduleListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link ScheduleParser#route_no_stop}.
+	 * Enter a parse tree produced by {@link ScheduleParser#dest}.
 	 * @param ctx the parse tree
 	 */
-	void enterRoute_no_stop(@NotNull ScheduleParser.Route_no_stopContext ctx);
+	void enterDest(@NotNull ScheduleParser.DestContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScheduleParser#route_no_stop}.
+	 * Exit a parse tree produced by {@link ScheduleParser#dest}.
 	 * @param ctx the parse tree
 	 */
-	void exitRoute_no_stop(@NotNull ScheduleParser.Route_no_stopContext ctx);
+	void exitDest(@NotNull ScheduleParser.DestContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link ScheduleParser#route}.
+	 * Enter a parse tree produced by {@link ScheduleParser#trainSchedule}.
 	 * @param ctx the parse tree
 	 */
-	void enterRoute(@NotNull ScheduleParser.RouteContext ctx);
+	void enterTrainSchedule(@NotNull ScheduleParser.TrainScheduleContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ScheduleParser#route}.
+	 * Exit a parse tree produced by {@link ScheduleParser#trainSchedule}.
 	 * @param ctx the parse tree
 	 */
-	void exitRoute(@NotNull ScheduleParser.RouteContext ctx);
+	void exitTrainSchedule(@NotNull ScheduleParser.TrainScheduleContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link ScheduleParser#route_stop}.
