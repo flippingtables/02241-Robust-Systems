@@ -229,7 +229,7 @@ public class ParserRailway {
 
 		// Constraint 5/12
 		if (!statCount.keySet().containsAll(endCount.keySet())) throw new Exception("invalid railway network - constraint 5");
-
+		
 		// Constraint 7/12 + 10/12
 		// Ensured by ParseSyntax()
 

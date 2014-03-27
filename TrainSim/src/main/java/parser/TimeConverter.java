@@ -6,7 +6,7 @@ public class TimeConverter {
 
 	private String time;
 	private int timeMinutes;
-
+	
 	public TimeConverter(String time) throws Exception {
 		this.time = time;
 		convert();
@@ -48,5 +48,6 @@ public class TimeConverter {
 	public int getTimeMinutes() {
 		return timeMinutes;
 	}
-
+	
+	
 }

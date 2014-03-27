@@ -10,9 +10,9 @@ public class RailwaySystem {
 	private Map<String, TrackNode> networkMap = new HashMap<String, TrackNode>();
 
 	public RailwaySystem(String filepath_railway, String filepath_route) throws Exception {
-		ParserRailway prailway = new ParserRailway("railway_def_1.txt");
+		ParserRailway prailway = new ParserRailway(filepath_railway);
 		networkMap = prailway.Analyze();
-		ParserRoute proute = new ParserRoute("route_def_1.txt", "railway_def_1.txt",networkMap);
+		ParserRoute proute = new ParserRoute(filepath_railway, filepath_route ,networkMap);
 		proute.Analyze();
 	}
 

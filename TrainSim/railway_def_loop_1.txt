@@ -1,0 +1,13 @@
+STAT Klampenborg l
+STAT Klampenborg k
+STAT Klampenborg o
+STAT Klampenborg d
+CONN l k
+CONN k m
+CONN m o
+CONN o l
+CONN m a
+CONN a b
+CONN b c
+CONN c d
+CONN a d
