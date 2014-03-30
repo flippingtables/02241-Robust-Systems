@@ -1,199 +1,148 @@
 package parser;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-
-/* 
-Parser for parsing train route files
-Checks all 9 listed constraints 
-Builds train lists in the railway system
-Possible improvements: The code contains some redundancy // somewhat complicated control structure
- */
+import java.io.*;
+import java.util.*;
 
 public class ParserRoute {
 
-	private Scanner input, input_aux; // Scanners used to read lines in input files
+	private Scanner fileScannerRoute, fileScannerRailway;
 
 	private Map<String, TrackNode> networkMap;
-	
-	private Map<String, Integer> appearanceCounter = new HashMap<String, Integer>(); // map containing a list of all train IDs and the number of times that each has been read in a line
-	private List<String> entries = new ArrayList<String>(); // contains a list of entries that have been read
-	private Set<String> trackPoints = new HashSet<String>(); // contains a set of all track point names that have been seen
-	private List<HashSet<String>> routePoints = new ArrayList<HashSet<String>>(); // list containing a set for each unique train ID of the track points that a given train passes
-	private Map<String, HashSet<String>> routePointsMap = new HashMap<String, HashSet<String>>(); // similar to routePoints but associates each set with the ID of the train to which the set belongs
-	String lastSeen; // contains the entry that was read before the one that is currently being read
 
-	private Set<String> statSet = new HashSet<String>();
-	private Set<String> connSet = new HashSet<String>();
-	private List<String[]> pool = new ArrayList<String[]>();
-	
-	public ParserRoute(String filepath_route, String filepath_railway, Map<String, TrackNode> networkMap) throws FileNotFoundException {
-		input = new Scanner(new File(filepath_route));
-		input_aux = new Scanner(new File(filepath_railway));
+	private HashSet<String> STATtrackPoints = new HashSet<String>();
+	private HashSet<String> CONNtrackPoints = new HashSet<String>();
+	private LinkedList<TreeSet<String>> connPairs = new LinkedList<TreeSet<String>>();
+
+	private Map<String, TreeMap<Integer, String>> orderOfTrackPoints = new HashMap<String, TreeMap<Integer, String>>();
+
+	ParserRoute(String filepath_route, String filepath_railway, Map<String, TrackNode> networkMap) throws FileNotFoundException {
+		fileScannerRoute = new Scanner(new File(filepath_route));
+		fileScannerRailway = new Scanner(new File(filepath_railway));
 		this.networkMap = networkMap;
 	}
 
-	public void Analyze() throws Exception {
+	void Analyze() throws Exception {
 		ParseSyntax();
 		ParseValidity();
 		BuildNetwork();
 	}
 
 	private void ParseSyntax() throws Exception {
+		HashSet<String> allLinesFromFile = new HashSet<String>();
+		String trainID = "foo", word2;
+		TimeConverter tc = new TimeConverter();
 
-		boolean flag_1 = false;
-
-		String word_1 = "foo", word_aux_1;
-		String word_2, word_aux_2;
-
-		while (input.hasNext()) {
-
-			String line = input.nextLine();
-			Scanner linesc = new Scanner(line);
-			Scanner linesc_aux = new Scanner(line);
-			linesc.useDelimiter("[^a-zA-Z0-9']+");
+		while (fileScannerRoute.hasNext()) {
+			String newLine = fileScannerRoute.nextLine();
+			Scanner lineScanner = new Scanner(newLine);
 
 			try {
+				String previouslyReadLine = trainID;
+				trainID = lineScanner.next();
+				if (trainID.charAt(0) == '#') continue;
 
-				lastSeen = word_1;
-				word_1 = linesc.next();
-				word_aux_1 = linesc_aux.next();
-
-				// Constraint 4/6
-				if (!word_1.equals(word_aux_1)) throw new Exception("illegal word - constraint 4");
-
-				// Constraint 3/6
-				if (!lastSeen.equals(word_1) && flag_1) {
-					if (appearanceCounter.keySet().contains(word_1)) throw new Exception("illegal entry - constraint 3");
-				}
-
-				if (appearanceCounter.containsKey(word_1)) {
-					appearanceCounter.put(word_1, appearanceCounter.get(word_1) + 1);
-				} else {
-					appearanceCounter.put(word_1, 1);
-					routePoints.add(new HashSet<String>());
-					routePointsMap.put(word_1, new HashSet<String>());
-				}
-				flag_1 = true;
+				// Constraint 3/6 + 4/6
+				if (!previouslyReadLine.equals(trainID) && orderOfTrackPoints.keySet().contains(trainID)) throw new Exception("SYNTAX PROBLEM: \"Entries for a given train must appear in a group; ALTERNATIVELY Each time a new train ID is read, the previously read IDs must not appear again.\"");
+				if (trainID.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: \"Word contains illegal characters.\"");
 
 				// Constraint 5/6
-				word_2 = linesc.next();
-				word_aux_2 = linesc_aux.next();
-				if (!word_2.equals(word_aux_2)) throw new Exception("illegal word - constraint 5");
-				trackPoints.add(word_2);
-				routePoints.get(routePoints.size() - 1).add(word_2);
-				routePointsMap.get(word_1).add(word_2);
-				
-				// Constraint 6/6
-				if (linesc.hasNext()) throw new Exception("illegal entry - constraint 6");
+				word2 = lineScanner.next();
+				if (word2.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: \"Word contains illegal characters.\"");
 
+				while (lineScanner.hasNext()) {
+					tc.setTime(lineScanner.next());
+					if (orderOfTrackPoints.keySet().contains(trainID)) {
+						// constraint 1/3
+						if (orderOfTrackPoints.get(trainID).keySet().contains(tc.getTimeInMinutes())) throw new Exception("SCHEDULE PROBLEM: \"A train can only occupy a single track point at a time; ALTERNATIVELY For a given train, there must not be multiple track points where it must appear at the same time.\"");
+						orderOfTrackPoints.get(trainID).put(tc.getTimeInMinutes(), word2);
+					} else {
+						TreeMap<Integer, String> dummy = new TreeMap<Integer, String>();
+						dummy.put(tc.getTimeInMinutes(), word2);
+						orderOfTrackPoints.put(trainID, dummy);
+					}
+				}
+
+				// Constraint 2/6
+				if (!allLinesFromFile.add(newLine)) throw new Exception("SYNTAX PROBLEM: \"There must not be duplicate entries\"");
 			} finally {
-				linesc.close();
-				linesc_aux.close();
+				lineScanner.close();
 			}
-
-			entries.add(line);
-
 		}
-
 		// Constraint 1/6
-		if (appearanceCounter.values().contains(1)) throw new Exception("illegal entry - constraint 1");
-
-		// Constraint 2/6
-		Set<String> check_set = new HashSet<String>(entries);
-		if (entries.size() != check_set.size()) throw new Exception("illegal entry - constraint 2");
-
+		for (String train : orderOfTrackPoints.keySet()) {
+			HashSet<String> trackNodes = new HashSet<String>(orderOfTrackPoints.get(train).values());
+			if (trackNodes.size() < 2) throw new Exception("SYNTAX PROBLEM: \"A train must have at least 2 entries.\"");
+		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void ParseValidity() throws Exception {
-		while (input_aux.hasNext()) {
-
-			String line = input_aux.nextLine();
-			Scanner linesc = new Scanner(line);
-			String word = linesc.next(); 
-
-			String[] pool_pair = new String[2];
+		while (fileScannerRailway.hasNext()) {
+			Scanner lineScanner = new Scanner(fileScannerRailway.nextLine());
+			String word = lineScanner.next(); 
 
 			if (word.equals("STAT")) {
-				linesc.next();
-				statSet.add(linesc.next());
+				lineScanner.next();
+				STATtrackPoints.add(lineScanner.next());
 			} else if (word.equals("CONN")) {
-				pool_pair[0] = linesc.next();
-				connSet.add(pool_pair[0]);
-				pool_pair[1] = linesc.next();
-				connSet.add(pool_pair[1]);
-				pool.add(pool_pair);
+				String word2 = lineScanner.next();
+				CONNtrackPoints.add(word2);
+				String word3 = lineScanner.next();
+				CONNtrackPoints.add(word3);
+				connPairs.add(new TreeSet<String>(Arrays.asList(word2, word3)));
 			}
-
-			linesc.close();
-
+			
+			lineScanner.close();
 		}
 
 		// Constraint 1/3
-		if (!connSet.containsAll(trackPoints)) throw new Exception("invalid route - constraint 1");
+		for (TreeMap<Integer, String> trainScheduleMap : orderOfTrackPoints.values()) 
+			for (String trackNode : trainScheduleMap.values()) 
+				if (!CONNtrackPoints.contains(trackNode)) throw new Exception("ROUTE PROBLEM: \"A track point name in an entry must appear in the railway definition file.\"");
 
 		// Constraint 2/3
-		List<HashSet<String>> routePoints_Copy = new ArrayList<HashSet<String>>();
-		for (HashSet<String> set : routePoints) {
-			routePoints_Copy.add((HashSet<String>) set.clone());
-		}
-		for (int i = 0; i < routePoints.size(); i++) {
-			routePoints.get(i).retainAll(statSet);
-			if (routePoints.get(i).size() < 2) throw new Exception("invalid route - constraint 2");
+		for (String train : orderOfTrackPoints.keySet()) {
+			HashSet<String> trackPoints = new HashSet<String>(orderOfTrackPoints.get(train).values());
+			trackPoints.retainAll(STATtrackPoints);
+			if (trackPoints.size() < 2) throw new Exception("ROUTE PROBLEM: \"A train route must pass at least 2 stations.\"");
 		}
 
 		// Constraint 3/3
-		for (int i = 0; i < routePoints_Copy.size(); i++) {
-			List<String[]> pool_copy = new ArrayList<String[]>(pool);
-			LinkedList<String> trackPoints_List = new LinkedList<String>(routePoints_Copy.get(i));
-			LinkedList<String> selected = new LinkedList<String>();
-			selected.add(trackPoints_List.removeFirst());
-			Set<String> visited = new HashSet<String>(selected);
-			while (!selected.isEmpty()) {
-				String foo = selected.removeFirst();
-				for (int j = 0; j < pool_copy.size(); j++) {
-					String[] pair = pool_copy.get(j);
-					if (pair[0].equals(foo)) {					
-						if (trackPoints_List.contains(pair[1]) || visited.contains(pair[1])) {
-							selected.add(pair[1]);
-							visited.add(pair[1]);
-							trackPoints_List.remove(pair[1]);
-							pool_copy.remove(pair);
-							j--;
-						}
-					} else if (pair[1].equals(foo)) {
-						if (trackPoints_List.contains(pair[0]) || visited.contains(pair[0])) {
-							selected.add(pair[0]);
-							visited.add(pair[0]);
-							trackPoints_List.remove(pair[0]);
-							pool_copy.remove(pair);
-							j--;
+		for (String train : orderOfTrackPoints.keySet()) {
+			TreeSet<String> train_trackPoints = new TreeSet<String>(orderOfTrackPoints.get(train).values());
+			TreeSet<String> deletable = new TreeSet<String>(Arrays.asList(train_trackPoints.pollFirst()));
+			while (!deletable.isEmpty()) {
+				String trackPoint = deletable.pollFirst();
+				for (TreeSet<String> pair : connPairs)
+					if (pair.contains(trackPoint)) {
+						TreeSet<String> pairCopy = new TreeSet<String>(pair);
+						pairCopy.remove(trackPoint);
+						if (train_trackPoints.containsAll(pairCopy)) {
+							deletable.addAll(pairCopy);
+							train_trackPoints.removeAll(pairCopy);
 						}
 					}
-				}
 			}
-			if (!trackPoints_List.isEmpty()) throw new Exception("invalid route - constraint 3");
+			if (!train_trackPoints.isEmpty()) throw new Exception("ROUTE PROBLEM: \"A train route cannot contain any jumps; ALTERNATIVELY It must be possible at any point on a train route to get to any other point on the train route.\"");
 		}
 
+		// Constraint 2/3 + Constraint 3/3
+		for (String train : orderOfTrackPoints.keySet()) {
+			ArrayList<String> trackNodes = new ArrayList<String>(orderOfTrackPoints.get(train).values());
+			for (int i = 0; i < trackNodes.size() - 1; i++) {
+				boolean flag = false;
+				for (TreeSet<String> pair : connPairs) if (pair.contains(trackNodes.get(i)) && pair.contains(trackNodes.get(i + 1))) flag = true;
+				if (!flag) throw new Exception("SCHEDULE PROBLEM: \"The times given must not imply jumps between track points.\"");
+				if (trackNodes.get(i).equals(trackNodes.get(i + 1))) throw new Exception("SCHEDULE PROBLEM: \"Consecutive times cannot be given for the same node; ALTERNATIVELY Each new time must direct the train to a node different than the previous time.\"");
+			}
+		}
 	}
 
 	private void BuildNetwork() {
-			
-		for (String trainN : routePointsMap.keySet()) {
-			for (String trackN : routePointsMap.get(trainN)) {
-				networkMap.get(trackN).addTrain(trainN);
-			}
+		for (String train : orderOfTrackPoints.keySet()) {
+			ArrayList<Integer> times_indexed = new ArrayList<Integer>(orderOfTrackPoints.get(train).keySet());
+			for (Integer time : orderOfTrackPoints.get(train).keySet())
+				networkMap.get(orderOfTrackPoints.get(train).get(time)).addTrain(train, time + times_indexed.indexOf(time) * 2000);			
 		}
-		
 	}
 
 }

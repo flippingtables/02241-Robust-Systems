@@ -190,7 +190,7 @@ public class ParserRouteTimeAware {
 			
 		for (String trainN : routePointsMap.keySet()) {
 			for (String trackN : routePointsMap.get(trainN)) {
-				networkMap.get(trackN).addTrain(trainN);
+				//networkMap.get(trackN).addTrain(trainN);
 			}
 		}
 		

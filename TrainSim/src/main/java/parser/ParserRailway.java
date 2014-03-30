@@ -1,263 +1,129 @@
 package parser;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
-import java.util.Set;
-
-/* 
-Parser for parsing railway files
-Checks all 25 listed constraints for syntax and validity + some unlisted constraints to which a nullPointerException is automatically thrown
-Returns an object RailwaySystem containing the railway system specified in the input file
-Possible improvements: The code contains some redundancy
- */
+import java.io.*;
+import java.util.*;
 
 public class ParserRailway {
 
-	private Scanner input; // Scanner reading each line in the input file
-	private Boolean[] hasSeen; // {"STAT", "CONN", "END"} // 3x1 array of Boolean indicating if the corresponding keyword has been seen at some point
-	private String[] keyWords = {"STAT", "CONN", "END"}; // list of keywords
-	private List<String> entries = new ArrayList<String>(); // List of all entries (lines) that have been read
+	private Scanner fileScanner;
+	private HashSet<String> keyWords = new HashSet<String>(Arrays.asList("STAT", "CONN", "END")); 
 
-	private Map<String, Integer> statCount = new HashMap<String, Integer>(); // counts the number of times that a track point name has been seen in the STAT section, e.g. {h -> 1, b -> 1, ...}
-	private Map<String, Integer> connCount = new HashMap<String, Integer>(); // counts the number of times that a track point name has been seen in the CONN section 
-	private Map<String, Integer> endCount = new HashMap<String, Integer>(); // counts the number of times that a track point name has been seen in the END section
+	private HashSet<String> STATobservedTrackPoints = new HashSet<String>();
+	private HashMap<String, Integer> trackPoint_numberOfConnections = new HashMap<String, Integer>();
+	private HashSet<String> ENDobservedTrackPoints = new HashSet<String>();
 
-	private Map<String, String> stationNames = new HashMap<String, String>(); // maps all track point names to a corresponding full station name for track points that have stations
+	private LinkedList<TreeSet<String>> connPairs = new LinkedList<TreeSet<String>>();
+	private LinkedList<TreeSet<String>> connPairs_copy;
 
-	private List<String[]> pool = new ArrayList<String[]>(); // contains all pairs of track names seen in the CONN section, e.g. [[h],[b]], [[b],[k]], ...
-	private List<String[]> pool_copy; // a copy of pool used in BuildNetwork()
-
-	private Map<String, TrackNode> networkMap = new HashMap<String, TrackNode>(); // a map of all track points and their corresponding nodes
-
-	public ParserRailway(String filepath_railway) throws FileNotFoundException {
-		input = new Scanner(new File(filepath_railway));
-		hasSeen = new Boolean[3];
-		Arrays.fill(hasSeen,false);
+	ParserRailway(String filepath_railway) throws FileNotFoundException {
+		fileScanner = new Scanner(new File(filepath_railway));
 	}
 
-	public Map<String, TrackNode> Analyze() throws Exception {
+	Map<String, TrackNode> Analyze() throws Exception {
 		ParseSyntax();
 		ParseValidity();
-		BuildNetwork();
-		return networkMap;
+		return BuildNetwork();
 	}
 
 	private void ParseSyntax() throws Exception {
+		Set<String> allLinesFromFile = new HashSet<String>();
 
-		while (input.hasNext()) {
-
-			String line = input.nextLine();
-			Scanner linesc = new Scanner(line);
-			Scanner linesc_aux = new Scanner(line);
-			linesc.useDelimiter("[^a-zA-Z']+");
-
-			String word_1;
-			String word_2, word_aux_2;
-			String word_3, word_aux_3;
+		while (fileScanner.hasNext()) {
+			String newLine = fileScanner.nextLine();
+			Scanner lineScanner = new Scanner(newLine);
+			String keyWord, word2, word3;
 
 			try {
+				keyWord = lineScanner.next();
+				if (keyWord.charAt(0) == '#') continue;
 
 				// Constraint 1/13
-				// Guaranteed: nothing
-				word_1 = linesc.next();
-				linesc_aux.next();
-				if (!Arrays.asList(keyWords).contains(word_1)) throw new Exception("illegal keyword - constraint 1");
+				if (!keyWords.contains(keyWord)) throw new Exception("SYNTAX PROBLEM: \"An entry must begin with either String STAT, CONN, or END.\"");
 
-				// Constraint 2/13 + 3/13
-				// Guaranteed: String word is either "STAT", "CONN", or "END"  
-				switch (word_1) {
-				case "STAT":
-					hasSeen[0] = true;
-					if (hasSeen[1] || hasSeen[2]) throw new Exception("illegal entry order - constraint 2");
-					break;
-				case "CONN":
-					hasSeen[1] = true;
-					if (hasSeen[2]) throw new Exception("illegal entry order - constraint 3");
-					break;
-				case "END":
-					hasSeen[2] = true;
-					break;
-				}
+				if (keyWord.equals("STAT")) {	
+					// Constraint 2/11
+					if (lineScanner.next().matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈'](.+)?")) throw new Exception("SYNTAX PROBLEM: \"Word contains illegal characters.\"");
 
-				if (word_1.equals("STAT")) {
+					// Constraint 3/11 + 7/12 + 4/11
+					word3 = lineScanner.next();
+					if (word3.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: \"Word contains illegal characters.\"");
+					if (!STATobservedTrackPoints.add(word3)) throw new Exception("VALIDITY PROBLEM: \"There can at most be 1 station on a track point.\"");
+					if (lineScanner.hasNext()) throw new Exception("SYNTAX PROBLEM: \"Nothing may follow STAT, a String, and a String.\"");
 
-					// Constraint 4/13
-					// Guaranteed: <previous> + entries have the correct order
-					word_2 = linesc.next();
-					word_aux_2 = linesc_aux.next();
-					if (!word_2.equals(word_aux_2)) throw new Exception("illegal word - constraint 4");
-
-					// Constraint 5/13
-					// Guaranteed: <previous>
-					linesc.useDelimiter("[^a-zA-Z0-9]+");
-					word_3 = linesc.next();
-					word_aux_3 = linesc_aux.next();
-					if (!word_3.equals(word_aux_3)) throw new Exception("illegal word - constraint 5");
-					if (statCount.containsKey(word_3)) {
-						statCount.put(word_3, statCount.get(word_3) + 1);
-					} else {
-						statCount.put(word_3, 1);
-					}
-					stationNames.put(word_3, word_2);
-
-					// Constraint 6/13
-					// Guaranteed: <previous>
-					if (linesc.hasNext()) throw new Exception("illegal entry - constraint 6");
-
-				} else if (word_1.equals("CONN")) {
-
-					String[] pool_pair = new String[2];
-
-					// Constraint 7/13
-					// Guaranteed: <previous>
-					linesc.useDelimiter("[^a-zA-Z0-9]+");
-					word_2 = linesc.next();
-					word_aux_2 = linesc_aux.next();
-					if (!word_2.equals(word_aux_2)) throw new Exception("illegal word - constraint 7");
-					if (connCount.containsKey(word_2)) {
-						connCount.put(word_2, connCount.get(word_2) + 1);
-					} else {
-						connCount.put(word_2, 1);
-					}
-					pool_pair[0] = word_2;
-					word_2 = "";
-
-					// Constraint 8/13
-					// Guaranteed: <previous>
-					linesc.useDelimiter("[^a-zA-Z0-9]+");
-					word_3 = linesc.next();
-					word_aux_3 = linesc_aux.next();
-					if (!word_3.equals(word_aux_3)) throw new Exception("illegal word - constraint 8");
-					if (connCount.containsKey(word_2)) {
-						connCount.put(word_3, connCount.get(word_2) + 1);
-					} else {
-						connCount.put(word_3, 1);
-					}
-					pool_pair[1] = word_3;
-					pool.add(pool_pair);
-
-					// Constraint 9/13
-					// Guaranteed: <previous>
-					if (word_2.equals(word_3)) throw new Exception("illegal entry - constraint 9");
-
-					// Constraint 11/13
-					// Guaranteed: <previous> + word_2 != word_3
-					if (linesc.hasNext()) throw new Exception("illegal entry - constraint 11");
-
-				} else {
-
-					// Constraint 12/13
-					// Guaranteed: <previous>
-					linesc.useDelimiter("[^a-zA-Z0-9]+");
-					word_2 = linesc.next();
-					word_aux_2 = linesc_aux.next();
-					if (!word_2.equals(word_aux_2)) throw new Exception("illegal word - constraint 12");
-					if (endCount.containsKey(word_2)) {
-						endCount.put(word_2, endCount.get(word_2) + 1);
-					} else {
-						endCount.put(word_2, 1);
+				} else if (keyWord.equals("CONN")) {
+					// Constraint 5/11 + 6/11
+					word2 = lineScanner.next();
+					word3 = lineScanner.next();
+					if (word2.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: - \"Following CONN must be a String.\"");
+					if (word3.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: - \"Following CONN and String must be a String.\"");
+					
+					connPairs.add(new TreeSet<String>(Arrays.asList(word2, word3)));
+					for (String word : connPairs.getLast()) {
+						if (trackPoint_numberOfConnections.containsKey(word)) {
+							trackPoint_numberOfConnections.put(word, trackPoint_numberOfConnections.get(word) + 1);
+						} else {
+							trackPoint_numberOfConnections.put(word, 1);
+						}
 					}
 
-					// Constraint 13/13
-					// Guaranteed: <previous> + word_2 != word_3
-					if (linesc.hasNext()) throw new Exception("illegal entry - constraint 13");
+					// Constraint 7/11 + 9/11
+					if (word2.equals(word3)) throw new Exception("SYNTAX PROBLEM: \"In a CONN entry, String 1 and String 2 must not be the same.\"");
+					if (lineScanner.hasNext()) throw new Exception("SYNTAX PROBLEM: \"Nothing may follow CONN, String, and String.\"");
+
+				} else { // keyword is END
+					// Constraint 10/11 + 11/11
+					word2 = lineScanner.next();
+					if (word2.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: - \"Following END must be a String.\"");
+					if (lineScanner.hasNext()) throw new Exception("SYNTAX PROBLEM: \"Nothing may follow END and String.\"");
+
+					ENDobservedTrackPoints.add(word2);
 
 				}
-
-				entries.add(line);
+				// Constraint 8/11
+				if (!allLinesFromFile.add(newLine)) throw new Exception("SYNTAX PROBLEM: \"There must not be duplicate entries\"");
 
 			} finally {
-				linesc.close();
-				linesc_aux.close();
+				lineScanner.close();
 			}
 		}
-
-		// Constraint 10/13
-		// Guaranteed: <previous> + all entries are well-formed
-		Set<String> check_set = new HashSet<String>(entries);
-		if (entries.size() != check_set.size()) throw new Exception("illegal entry - constraint 10");
-
 	}
 
-	public void ParseValidity() throws Exception {
-
-		pool_copy = new ArrayList<String[]>(pool);
-
-		// Constraint 1/12 + 6/12 + 12/12
-		Iterator<Entry<String, Integer>> it = connCount.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, Integer> pairs = (Entry<String, Integer>) it.next();
-			if (pairs.getValue() > 3) throw new Exception("invalid railway network - constraint 1");
-			if (pairs.getValue() == 3 && statCount.keySet().contains(pairs.getKey())) throw new Exception("illegal railway network - constraint 6");
-			if (pairs.getValue() == 1 && !endCount.keySet().contains(pairs.getKey())) throw new Exception("illegal railway network - constraint 12");
-		}
+	private void ParseValidity() throws Exception {
+		connPairs_copy = new LinkedList<TreeSet<String>>(connPairs);
 
 		// Constraint 2/12
-		LinkedList<String> deletable = new LinkedList<String>(Arrays.asList(pool.remove(pool.size()-1)));
+		TreeSet<String> deletable = new TreeSet<String>(connPairs.removeFirst());
 		while (!deletable.isEmpty()) {
-			String foo = deletable.removeFirst();
-			for (int i = 0; i < pool.size(); i++) {
-				String[] pair = pool.get(i);
-				if (pair[0].equals(foo)) {
-					deletable.add(pair[1]);
-					pool.remove(pair);
-					i--;
-				} else if (pair[1].equals(foo)) {
-					deletable.add(pair[0]);
-					pool.remove(pair);
+			String trackPoint = deletable.pollFirst();
+			for (int i = 0; i < connPairs.size(); i++) {
+				if (connPairs.get(i).contains(trackPoint)) {
+					deletable.addAll(connPairs.get(i));
+					connPairs.remove(i);
 					i--;
 				}
 			}
 		}
-		if (!pool.isEmpty()) throw new Exception("invalid railway network - constraint 2");
+		if (!connPairs.isEmpty()) throw new Exception("VALIDITY PROBLEM: \"All tracks must be reachable from all other tracks (i.e. the whole railway system must be connected).\"");
 
-		// Constraint 3/12
-		if (connCount.isEmpty()) throw new Exception("invalid railway network - constraint 3");
+		// Constraint 3/12 + 4/12 + 5/12 + 6/12 + 8/12 + 9/12 + 11/12 + 12/12
+		if (Collections.max(trackPoint_numberOfConnections.values()) > 3) throw new Exception("VALIDITY PROBLEM: \"Railway tracks can only be of the following kinds {straight, switch, end}.\"");
+		if (trackPoint_numberOfConnections.isEmpty()) throw new Exception("VALIDITY PROBLEM: \"A railway system must have at least 1 track.\"");
+		if (STATobservedTrackPoints.size() < 2) throw new Exception("VALIDITY PROBLEM: \"A railway system must have at least 2 stations.\"");
+		for (String trackPoint : STATobservedTrackPoints) if (trackPoint_numberOfConnections.get(trackPoint) == 3) throw new Exception("VALIDITY PROBLEM: \"Stations cannot be placed on track switch points (a track end point that connects to two other tracks).\"");
+		if (!STATobservedTrackPoints.containsAll(ENDobservedTrackPoints)) throw new Exception("VALIDITY PROBLEM: \"Every end must have a station.\"");
+		if (!trackPoint_numberOfConnections.keySet().containsAll(STATobservedTrackPoints)) throw new Exception("VALIDITY PROBLEM: \"Stations must be placed on track points that exist.\"");
+		for (String trackPoint : ENDobservedTrackPoints) if (trackPoint_numberOfConnections.get(trackPoint) != 1) throw new Exception("VALIDITY PROBLEM: \"Ends can only be placed on track points that do not connect to other track points.\"");
+		if (!trackPoint_numberOfConnections.keySet().containsAll(ENDobservedTrackPoints)) throw new Exception("VALIDITY PROBLEM: \"Ends must be placed on track points that exist.\"");
+		for (String trackPoint : trackPoint_numberOfConnections.keySet()) if (trackPoint_numberOfConnections.get(trackPoint) == 1 && !ENDobservedTrackPoints.contains(trackPoint)) throw new Exception("VALIDITY PROBLEM: \"All track points that do not connect to other track points must be covered by an end.\"");
 
-		// Constraint 4/12
-		if (statCount.keySet().size() < 2) throw new Exception("invalid railway network - constraint 4");
-
-		// Constraint 5/12
-		if (!statCount.keySet().containsAll(endCount.keySet())) throw new Exception("invalid railway network - constraint 5");
-		
-		// Constraint 7/12 + 10/12
-		// Ensured by ParseSyntax()
-
-		// Constraint 8/12 + 11/12
-		if (!connCount.keySet().containsAll(statCount.keySet())) throw new Exception("invalid railway network - constraint 8");
-		if (!connCount.keySet().containsAll(endCount.keySet())) throw new Exception("invalid railway network - constraint 11");
-
-		// Constraint 9/12
-		for (String val : endCount.keySet()) {
-			if (connCount.get(val) != 1) throw new Exception("invalid railway network - constraint 9");
-		}
+		// Constraint 10/12 ensured by ParseSyntax()
 	}
 
-	private void BuildNetwork() {
-
-		for (String n : connCount.keySet()) {
-			if (statCount.containsKey(n)) {
-				networkMap.put(n, new TrackNode(n,stationNames.get(n)));
-			} else {
-				networkMap.put(n, new TrackNode(n));
-			}
-		}
-
-		for (int i = 0; i < pool_copy.size(); i++) {
-			networkMap.get(pool_copy.get(i)[0]).addNode(networkMap.get(pool_copy.get(i)[1]));
-			networkMap.get(pool_copy.get(i)[1]).addNode(networkMap.get(pool_copy.get(i)[0]));
-		}
-
+	private Map<String, TrackNode> BuildNetwork() {
+		Map<String, TrackNode> networkMap = new HashMap<String, TrackNode>();
+		for (String n : trackPoint_numberOfConnections.keySet()) networkMap.put(n, new TrackNode(n));
+		for (TreeSet<String> pair : connPairs_copy) networkMap.get(pair.first()).addNode(networkMap.get(pair.last()));
+		return networkMap;
 	}
 
 }

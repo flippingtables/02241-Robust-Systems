@@ -1,12 +1,10 @@
+STAT Hellerup h
+STAT Lyngby l
 STAT Klampenborg k
-STAT Klampenborg m
-STAT Klampenborg o
-STAT Klampenborg h
-STAT Klampenborg n
-CONN l k
-CONN k m
-CONN m n
-CONN n o
-CONN o l
-CONN l h
+CONN h b
+CONN b k
+CONN b l
+END k
 END h
+END l
+

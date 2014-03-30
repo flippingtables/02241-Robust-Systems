@@ -1,53 +1,45 @@
 package parser;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class TimeConverter {
 
-	private String time;
-	private int timeMinutes;
-	
-	public TimeConverter(String time) throws Exception {
-		this.time = time;
-		convert();
+	private int timeInMinutes;
+
+	void setTime(String time24h) throws Exception {
+		convertToMinutes(time24h);
 	}
 
-	private void convert() throws Exception {
-		Scanner s = new Scanner(time);
+	private void convertToMinutes(String time24h) throws Exception {
+		Scanner s = new Scanner(time24h);
+		s.useDelimiter("[:]");
 		try {
-			int n1;
-			int n2;
+			int hours;
+			int minutes;
 
-			// Constraint 1/5
-			// Ensured by ParserRoute
+			// Constraint 1/4 ensured by ParserRoute.java
 
-			// Constraint 2/5
+			// Constraint 2/4
 			try {
-				s.useDelimiter("[:]+");
-				n1 = Integer.parseInt(s.next());
-				n2 = Integer.parseInt(s.next());
-			} catch (Exception e) {
-				throw new Exception("invalid time - constraint 2");
+				hours = Integer.parseInt(s.next());
+				minutes = Integer.parseInt(s.next());
+			} catch (Exception e) { 
+				throw new Exception("TIME PROBLEM: \"Time must be given as 1 or 2 integers (xx), followed by a colon, followed by 1 or 2 integers (yy).\"");
 			}
 
-			// Constraint 3/5
-			if (n1 > 23 || n1 < 0) throw new Exception("invalid time - constraint 3");
+			// Constraint 3/4 + 4/4
+			if (hours > 23 || hours < 0) throw new Exception("TIME PROBLEM: \"xx must be in the range [0;23].\"");
+			if (minutes > 59 || minutes < 0) throw new Exception("TIME PROBLEM: \"yy must be in the range [0;59].\"");
 
-			// Constraint 4/5
-			if (n2 > 59 || n2 < 0) throw new Exception("invalid time - constraint 4");
-
-			// Constraint 5/5
-			if (s.hasNext()) throw new Exception("invalid time - constraint 5");
-
-			timeMinutes = n1 * 60 + n2;
+			timeInMinutes = hours * 60 + minutes;
+			
 		} finally {
 			s.close();
 		}
 	}
 
-	public int getTimeMinutes() {
-		return timeMinutes;
+	int getTimeInMinutes() { 
+		return timeInMinutes; 
 	}
-	
-	
+
 }

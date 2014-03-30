@@ -1,9 +1,8 @@
-STAT Hellerup h
-STAT Lyngby l
-STAT Klampenborg k
-CONN h b
-CONN b l
-CONN b k
-END k
-END h
-END l
+STAT Græsted a
+STAT Arnakke e
+STAT Ølstykke d
+CONN a b
+CONN b d
+CONN d e
+CONN e b
+END a
