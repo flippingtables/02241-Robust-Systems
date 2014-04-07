@@ -1,0 +1,2 @@
+TRAIN1 a b c d stop c b
+TRAIN2 x y z
