@@ -1,0 +1,13 @@
+WS=8
+NEWLINE=7
+COMMENT=9
+ID=6
+T__1=3
+T__0=4
+STRING=5
+T__3=1
+T__2=2
+'END'=4
+'#'=3
+'CONN'=2
+'STAT'=1

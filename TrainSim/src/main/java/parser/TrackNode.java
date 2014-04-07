@@ -15,7 +15,7 @@ public class TrackNode {
 	boolean hasCollisions() {
 		HashMap<HashSet<Integer>, String> collisionTimes = new HashMap<HashSet<Integer>, String>();
 
-		for (String train : trainList.keySet()) 
+		for (String train : trainList.keySet())
 			for (Integer time : trainList.get(train)) {
 				int collisionPhaseStartTime = time % 2000, collisionPhaseEndTime = time % 2000;
 				HashSet<Integer> dummy = new HashSet<Integer>();
@@ -30,8 +30,8 @@ public class TrackNode {
 				collisionTimes.put(dummy, train);
 			}
 
-		for (HashSet<Integer> i : collisionTimes.keySet()) 
-			for (HashSet<Integer> j : collisionTimes.keySet()) 
+		for (HashSet<Integer> i : collisionTimes.keySet())
+			for (HashSet<Integer> j : collisionTimes.keySet())
 				if (!i.equals(j) && !collisionTimes.get(i).equals(collisionTimes.get(j)))
 					if (!Collections.disjoint(i, j)) return true;
 		return false;
