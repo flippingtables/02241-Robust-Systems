@@ -46,7 +46,7 @@ public class ParserRailway {
 
 					// Constraint 3/11 + 7/12 + 4/11
 					word3 = lineScanner.next();
-					if (word3.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: \"Word contains illegal characters.\"");
+					if (word3.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?") || word3.matches("[0-9+](.+)?")) throw new Exception("SYNTAX PROBLEM: \"Word contains illegal characters.\"");
 					if (!STATobservedTrackPoints.add(word3)) throw new Exception("VALIDITY PROBLEM: \"There can at most be 1 station on a track point.\"");
 					if (lineScanner.hasNext()) throw new Exception("SYNTAX PROBLEM: \"Nothing may follow STAT, a String, and a String.\"");
 
@@ -54,8 +54,8 @@ public class ParserRailway {
 					// Constraint 5/11 + 6/11
 					word2 = lineScanner.next();
 					word3 = lineScanner.next();
-					if (word2.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: - \"Following CONN must be a String.\"");
-					if (word3.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: - \"Following CONN and String must be a String.\"");
+					if (word2.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?") || word2.matches("[0-9+](.+)?")) throw new Exception("SYNTAX PROBLEM: - \"Following CONN must be a legal String.\"");
+					if (word3.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?") || word3.matches("[0-9+](.+)?")) throw new Exception("SYNTAX PROBLEM: - \"Following CONN and String must be a legal String.\"");
 					
 					connPairs.add(new TreeSet<String>(Arrays.asList(word2, word3)));
 					for (String word : connPairs.getLast()) {
@@ -73,7 +73,7 @@ public class ParserRailway {
 				} else { // keyword is END
 					// Constraint 10/11 + 11/11
 					word2 = lineScanner.next();
-					if (word2.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?")) throw new Exception("SYNTAX PROBLEM: - \"Following END must be a String.\"");
+					if (word2.matches("(.+)?[^a-zA-ZÊ¯Â∆ÿ≈0-9'](.+)?") || word2.matches("[0-9+](.+)?")) throw new Exception("SYNTAX PROBLEM: - \"Following END must be a legal String.\"");
 					if (lineScanner.hasNext()) throw new Exception("SYNTAX PROBLEM: \"Nothing may follow END and String.\"");
 
 					ENDobservedTrackPoints.add(word2);
@@ -105,12 +105,12 @@ public class ParserRailway {
 		}
 		if (!connPairs.isEmpty()) throw new Exception("VALIDITY PROBLEM: \"All tracks must be reachable from all other tracks (i.e. the whole railway system must be connected).\"");
 
-		// Constraint 3/12 + 4/12 + 5/12 + 6/12 + 8/12 + 9/12 + 11/12 + 12/12
+		// Constraint 1/12 + 3/12 + 4/12 + 5/12 + 6/12 + 8/12 + 9/12 + 11/12 + 12/12
 		if (Collections.max(trackPoint_numberOfConnections.values()) > 3) throw new Exception("VALIDITY PROBLEM: \"Railway tracks can only be of the following kinds {straight, switch, end}.\"");
 		if (trackPoint_numberOfConnections.isEmpty()) throw new Exception("VALIDITY PROBLEM: \"A railway system must have at least 1 track.\"");
 		if (STATobservedTrackPoints.size() < 2) throw new Exception("VALIDITY PROBLEM: \"A railway system must have at least 2 stations.\"");
-		for (String trackPoint : STATobservedTrackPoints) if (trackPoint_numberOfConnections.get(trackPoint) == 3) throw new Exception("VALIDITY PROBLEM: \"Stations cannot be placed on track switch points (a track end point that connects to two other tracks).\"");
 		if (!STATobservedTrackPoints.containsAll(ENDobservedTrackPoints)) throw new Exception("VALIDITY PROBLEM: \"Every end must have a station.\"");
+		for (String trackPoint : STATobservedTrackPoints) if (trackPoint_numberOfConnections.get(trackPoint) == 3) throw new Exception("VALIDITY PROBLEM: \"Stations cannot be placed on track switch points (a track end point that connects to two other tracks).\"");
 		if (!trackPoint_numberOfConnections.keySet().containsAll(STATobservedTrackPoints)) throw new Exception("VALIDITY PROBLEM: \"Stations must be placed on track points that exist.\"");
 		for (String trackPoint : ENDobservedTrackPoints) if (trackPoint_numberOfConnections.get(trackPoint) != 1) throw new Exception("VALIDITY PROBLEM: \"Ends can only be placed on track points that do not connect to other track points.\"");
 		if (!trackPoint_numberOfConnections.keySet().containsAll(ENDobservedTrackPoints)) throw new Exception("VALIDITY PROBLEM: \"Ends must be placed on track points that exist.\"");
