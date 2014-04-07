@@ -9,8 +9,15 @@ public class RailwaySystem {
 	public RailwaySystem(String filepath_railway, String filepath_route) throws Exception {
 		ParserRailway prailway = new ParserRailway(filepath_railway);
 		networkMap = prailway.Analyze();
-		ParserRoute proute = new ParserRoute(filepath_route, filepath_railway, networkMap);
-		proute.Analyze();
+		
+		RouteSpecType rsp = new RouteSpecType(filepath_route);
+		if (rsp.isTimeAwareRouteSpec()) {
+			ParserRoute proute = new ParserRoute(filepath_route, filepath_railway, networkMap);
+			proute.Analyze();
+		} else {
+			ParserRouteNoTime proute = new ParserRouteNoTime(filepath_route, filepath_railway, networkMap);
+			proute.Analyze();
+		}	
 	}
 
 	public boolean hasCollisions() {
