@@ -84,19 +84,6 @@ public class RailwayBaseListener implements RailwayListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	 public void enterComments(@NotNull RailwayParser.CommentsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	 public void exitComments(@NotNull RailwayParser.CommentsContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	 public void enterEveryRule(@NotNull ParserRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}

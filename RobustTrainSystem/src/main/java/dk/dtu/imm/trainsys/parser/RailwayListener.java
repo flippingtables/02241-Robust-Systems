@@ -64,15 +64,4 @@ public interface RailwayListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitEnd(@NotNull RailwayParser.EndContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link RailwayParser#comments}.
-	 * @param ctx the parse tree
-	 */
-	void enterComments(@NotNull RailwayParser.CommentsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RailwayParser#comments}.
-	 * @param ctx the parse tree
-	 */
-	void exitComments(@NotNull RailwayParser.CommentsContext ctx);
 }

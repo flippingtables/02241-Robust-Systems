@@ -8,7 +8,6 @@ import dk.dtu.imm.trainsys.common.IRailwayNetworkUser;
 import dk.dtu.imm.trainsys.common.TrackNodeType;
 import dk.dtu.imm.trainsys.data.TrackNode;
 import dk.dtu.imm.trainsys.parser.RailwayListener;
-import dk.dtu.imm.trainsys.parser.RailwayParser.CommentsContext;
 import dk.dtu.imm.trainsys.parser.RailwayParser.ConnectContext;
 import dk.dtu.imm.trainsys.parser.RailwayParser.EndContext;
 import dk.dtu.imm.trainsys.parser.RailwayParser.ParseContext;
@@ -102,16 +101,6 @@ public class RailwayListenerImpl implements RailwayListener, IRailwayNetworkUser
 	}
 
 	public void exitParse(ParseContext ctx) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void enterComments(CommentsContext ctx) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void exitComments(CommentsContext ctx) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -1,0 +1,3 @@
+#TEST
+TRAIN1 h b l STOP ho
+TRAIN2 o s h b l ho STOP l b STOP k

@@ -17,16 +17,16 @@ public class RailwayParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__3=1, T__2=2, T__1=3, T__0=4, STRING=5, ID=6, NEWLINE=7, WS=8, COMMENT=9;
+		T__2=1, T__1=2, T__0=3, ID=4, STRING=5, NEWLINE=6, WS=7, COMMENT=8;
 	public static final String[] tokenNames = {
-		"<INVALID>", "'STAT'", "'CONN'", "'#'", "'END'", "STRING", "ID", "NEWLINE", 
-		"WS", "COMMENT"
+		"<INVALID>", "'STAT'", "'CONN'", "'END'", "ID", "STRING", "NEWLINE", "WS", 
+		"COMMENT"
 	};
 	public static final int
-		RULE_parse = 0, RULE_railsys = 1, RULE_comments = 2, RULE_station = 3, 
-		RULE_connect = 4, RULE_end = 5;
+		RULE_parse = 0, RULE_railsys = 1, RULE_station = 2, RULE_connect = 3, 
+		RULE_end = 4;
 	public static final String[] ruleNames = {
-		"parse", "railsys", "comments", "station", "connect", "end"
+		"parse", "railsys", "station", "connect", "end"
 	};
 
 	@Override
@@ -72,7 +72,7 @@ public class RailwayParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(12); railsys(0);
+			setState(10); railsys(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -131,28 +131,28 @@ public class RailwayParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(18);
+			setState(16);
 			switch (_input.LA(1)) {
 			case 1:
 				{
-				setState(15); station();
+				setState(13); station();
 				}
 				break;
 			case 2:
 				{
-				setState(16); connect();
+				setState(14); connect();
 				}
 				break;
-			case 4:
+			case 3:
 				{
-				setState(17); end();
+				setState(15); end();
 				}
 				break;
 			default:
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(24);
+			setState(22);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
 			while ( _alt!=2 && _alt!=-1 ) {
@@ -163,13 +163,13 @@ public class RailwayParser extends Parser {
 					{
 					_localctx = new RailsysContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_railsys);
-					setState(20);
+					setState(18);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(21); railsys(0);
+					setState(19); railsys(0);
 					}
 					} 
 				}
-				setState(26);
+				setState(24);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
 			}
@@ -182,59 +182,6 @@ public class RailwayParser extends Parser {
 		}
 		finally {
 			unrollRecursionContexts(_parentctx);
-		}
-		return _localctx;
-	}
-
-	public static class CommentsContext extends ParserRuleContext {
-		public TerminalNode STRING(int i) {
-			return getToken(RailwayParser.STRING, i);
-		}
-		public List<TerminalNode> STRING() { return getTokens(RailwayParser.STRING); }
-		public CommentsContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_comments; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof RailwayListener ) ((RailwayListener)listener).enterComments(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof RailwayListener ) ((RailwayListener)listener).exitComments(this);
-		}
-	}
-
-	public final CommentsContext comments() throws RecognitionException {
-		CommentsContext _localctx = new CommentsContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_comments);
-		int _la;
-		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(27); match(3);
-			setState(29); 
-			_errHandler.sync(this);
-			_la = _input.LA(1);
-			do {
-				{
-				{
-				setState(28); match(STRING);
-				}
-				}
-				setState(31); 
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-			} while ( _la==STRING );
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			exitRule();
 		}
 		return _localctx;
 	}
@@ -258,13 +205,13 @@ public class RailwayParser extends Parser {
 
 	public final StationContext station() throws RecognitionException {
 		StationContext _localctx = new StationContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_station);
+		enterRule(_localctx, 4, RULE_station);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(33); match(1);
-			setState(34); match(STRING);
-			setState(35); match(ID);
+			setState(25); match(1);
+			setState(26); match(STRING);
+			setState(27); match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -299,13 +246,13 @@ public class RailwayParser extends Parser {
 
 	public final ConnectContext connect() throws RecognitionException {
 		ConnectContext _localctx = new ConnectContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_connect);
+		enterRule(_localctx, 6, RULE_connect);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(37); match(2);
-			setState(38); match(ID);
-			setState(39); match(ID);
+			setState(29); match(2);
+			setState(30); match(ID);
+			setState(31); match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -337,12 +284,12 @@ public class RailwayParser extends Parser {
 
 	public final EndContext end() throws RecognitionException {
 		EndContext _localctx = new EndContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_end);
+		enterRule(_localctx, 8, RULE_end);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(41); match(4);
-			setState(42); match(ID);
+			setState(33); match(3);
+			setState(34); match(ID);
 			}
 		}
 		catch (RecognitionException re) {
@@ -370,18 +317,16 @@ public class RailwayParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\13/\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\3\2\3\2\3\3\3\3\3\3\3\3\5\3\25\n\3"+
-		"\3\3\3\3\7\3\31\n\3\f\3\16\3\34\13\3\3\4\3\4\6\4 \n\4\r\4\16\4!\3\5\3"+
-		"\5\3\5\3\5\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\2\3\4\b\2\4\6\b\n\f\2\2,\2"+
-		"\16\3\2\2\2\4\24\3\2\2\2\6\35\3\2\2\2\b#\3\2\2\2\n\'\3\2\2\2\f+\3\2\2"+
-		"\2\16\17\5\4\3\2\17\3\3\2\2\2\20\21\b\3\1\2\21\25\5\b\5\2\22\25\5\n\6"+
-		"\2\23\25\5\f\7\2\24\20\3\2\2\2\24\22\3\2\2\2\24\23\3\2\2\2\25\32\3\2\2"+
-		"\2\26\27\f\3\2\2\27\31\5\4\3\2\30\26\3\2\2\2\31\34\3\2\2\2\32\30\3\2\2"+
-		"\2\32\33\3\2\2\2\33\5\3\2\2\2\34\32\3\2\2\2\35\37\7\5\2\2\36 \7\7\2\2"+
-		"\37\36\3\2\2\2 !\3\2\2\2!\37\3\2\2\2!\"\3\2\2\2\"\7\3\2\2\2#$\7\3\2\2"+
-		"$%\7\7\2\2%&\7\b\2\2&\t\3\2\2\2\'(\7\4\2\2()\7\b\2\2)*\7\b\2\2*\13\3\2"+
-		"\2\2+,\7\6\2\2,-\7\b\2\2-\r\3\2\2\2\5\24\32!";
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\n\'\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\3\3\3\3\3\3\3\5\3\23\n\3\3\3\3\3"+
+		"\7\3\27\n\3\f\3\16\3\32\13\3\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\6\3\6\3"+
+		"\6\3\6\2\3\4\7\2\4\6\b\n\2\2$\2\f\3\2\2\2\4\22\3\2\2\2\6\33\3\2\2\2\b"+
+		"\37\3\2\2\2\n#\3\2\2\2\f\r\5\4\3\2\r\3\3\2\2\2\16\17\b\3\1\2\17\23\5\6"+
+		"\4\2\20\23\5\b\5\2\21\23\5\n\6\2\22\16\3\2\2\2\22\20\3\2\2\2\22\21\3\2"+
+		"\2\2\23\30\3\2\2\2\24\25\f\3\2\2\25\27\5\4\3\2\26\24\3\2\2\2\27\32\3\2"+
+		"\2\2\30\26\3\2\2\2\30\31\3\2\2\2\31\5\3\2\2\2\32\30\3\2\2\2\33\34\7\3"+
+		"\2\2\34\35\7\7\2\2\35\36\7\6\2\2\36\7\3\2\2\2\37 \7\4\2\2 !\7\6\2\2!\""+
+		"\7\6\2\2\"\t\3\2\2\2#$\7\5\2\2$%\7\6\2\2%\13\3\2\2\2\4\22\30";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

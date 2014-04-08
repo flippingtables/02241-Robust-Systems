@@ -9,13 +9,12 @@ railsys : station
 		| end
 		| railsys railsys
 		;
-comments : '#' (STRING)+;		
-station : 'STAT' STRING ID ;          // match keyword hello followed by an identifier
+station : 'STAT' STRING ID ;          
 connect : 'CONN' ID ID ;
 end : 'END' ID ;
 
-STRING : [A-Za-z][A-Za-z0-9]+ ;                     // match lower-case identifiers
-ID : [a-z0-9]+ ;             // match lower-case identifiers
+ID : [a-z0-9]+ ; 
+STRING : [A-Za-z][A-Za-z0-9]+ ;     
 NEWLINE : '\r'? '\n'->skip;
 WS : [ \t]+ -> skip;
 COMMENT: '#' ~[\r\n]* -> skip;

@@ -1,4 +1,4 @@
-package dk.dtu.imm.trainsys.parser.impl;
+package dk.dtu.imm.trainsys.common;
 
 import java.util.Collections;
 import java.util.List;

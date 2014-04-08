@@ -2,9 +2,15 @@
 STAT Hellerup h
 STAT Lyngby l
 STAT Klampenborg k
+STAT Holte ho
+STAT Svanemollen s
+STAT Oesterport o
 CONN h b
 CONN b k
 CONN b l
+CONN l ho
+CONN s h
+CONN o s
 END k
-END h
-END l
+END o
+END ho
