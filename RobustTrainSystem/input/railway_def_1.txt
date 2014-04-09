@@ -4,13 +4,13 @@ STAT Lyngby l
 STAT Klampenborg k
 STAT Holte ho
 STAT Svanemollen s
-STAT Oesterport o
+STAT Østerport ø
 CONN h b
 CONN b k
 CONN b l
 CONN l ho
 CONN s h
-CONN o s
+CONN ø s
 END k
-END o
+END ø
 END ho

@@ -117,7 +117,7 @@ public class RailwayListenerImpl implements RailwayListener, IRailwayNetworkUser
 			}
 			else{
 				//RAILWAY_CONSTRAINT_5 - An end must be a station
-				node.setIsEnd(true);
+				node.setEnd(true);
 			}
 		}
 		else{

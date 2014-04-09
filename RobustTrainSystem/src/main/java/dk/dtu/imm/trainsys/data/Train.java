@@ -1,13 +1,16 @@
 package dk.dtu.imm.trainsys.data;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
+import org.joda.time.DateTime;
 
 import dk.dtu.imm.trainsys.common.TrainDirection;
 
 public class Train {
 
 	private String trainID;
-	private ArrayList<TrackNode> route = new ArrayList<TrackNode>();
+	private ArrayList<TrackNodeArrivalTime> route = new ArrayList<TrackNodeArrivalTime>();
 	private TrainDirection direction = TrainDirection.ANY;
 	
 	//CONSTRUCTOR
@@ -25,11 +28,11 @@ public class Train {
 		this.trainID = trainID;
 	}
 
-	public ArrayList<TrackNode> getRoute() {
+	public ArrayList<TrackNodeArrivalTime> getRoute() {
 		return route;
 	}
 
-	public void setRoute(ArrayList<TrackNode> route) {
+	public void setRoute(ArrayList<TrackNodeArrivalTime> route) {
 		this.route = route;
 	}
 
@@ -43,8 +46,9 @@ public class Train {
 
 	
 	//MISC METHOD
-	public void addToRoute(TrackNode node){
-		route.add(node);		
+	public void addToRoute(TrackNode node, DateTime time){
+		TrackNodeArrivalTime arrival = new TrackNodeArrivalTime(node,time);
+		route.add(arrival);		
 	}
 
 	@Override

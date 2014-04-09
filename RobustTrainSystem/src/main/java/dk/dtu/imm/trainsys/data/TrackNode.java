@@ -1,7 +1,10 @@
 package dk.dtu.imm.trainsys.data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+
+import org.joda.time.DateTime;
 
 import dk.dtu.imm.trainsys.common.TrackNodeType;
 
@@ -11,6 +14,9 @@ public class TrackNode {
 	private TrackNodeType type=TrackNodeType.STATION;
 	private ArrayList<TrackNode> connectedLeftNodes = new ArrayList<TrackNode>();
 	private ArrayList<TrackNode> connectedRightNodes = new ArrayList<TrackNode>();
+	private HashSet<String> passingTrainsSet = new HashSet<String>();
+	private ArrayList<TrainArrivalTime> arrivalTimeSchedule = new ArrayList<TrainArrivalTime>();
+		//map from train to listOfTime it is going to pass this station
 	private boolean end = false;
 
 	//CONSTRUCTOR
@@ -66,9 +72,28 @@ public class TrackNode {
 		return end;
 	}
 
-	public void setIsEnd(boolean end) {
+	public void setEnd(boolean end) {
 		this.end = end;
-	}	
+	}
+	
+	public HashSet<String> getPassingTrainsSet() {
+		return passingTrainsSet;
+	}
+
+
+	public void setPassingTrainsSet(HashSet<String> passingTrainsSet) {
+		this.passingTrainsSet = passingTrainsSet;
+	}
+
+
+	public ArrayList<TrainArrivalTime> getArrivalTimeSchedule() {
+		return arrivalTimeSchedule;
+	}
+
+
+	public void setArrivalTimeSchedule(ArrayList<TrainArrivalTime> arrivalTimeSchedule) {
+		this.arrivalTimeSchedule = arrivalTimeSchedule;
+	}
 	
 	//MISC METHOD
 	public void addConnectedLeftNode(TrackNode node){
@@ -76,6 +101,13 @@ public class TrackNode {
 	}
 	public void addConnectedRightNode(TrackNode node){
 		this.connectedRightNodes.add(node);
+	}
+	public void addToPassingTrainsSet(String trainID){
+		
+		passingTrainsSet.add(trainID);
+	}
+	public void addToArrivalTimeSchedule(String trainID,DateTime arrivalTime){
+		arrivalTimeSchedule.add(new TrainArrivalTime(trainID,arrivalTime));
 	}
 
 
@@ -146,5 +178,11 @@ public class TrackNode {
 		}
 		return true;
 	}
+
+
+	
+
+
+
 
 }

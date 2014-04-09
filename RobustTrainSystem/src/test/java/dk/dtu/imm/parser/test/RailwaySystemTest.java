@@ -4,18 +4,27 @@ package dk.dtu.imm.parser.test;
 import org.junit.Test;
 
 import dk.dtu.imm.trainsys.common.IRailwayNetworkUser;
+import dk.dtu.imm.trainsys.common.TrainSystemReport;
 import dk.dtu.imm.trainsys.parser.impl.RailwayParserImpl;
 import dk.dtu.imm.trainsys.parser.impl.RouteParserImpl;
+import dk.dtu.imm.trainsys.parser.impl.ScheduleParserImpl;
 
 public class RailwaySystemTest implements IRailwayNetworkUser{
 	
 	
     public static void main(String[] args) throws Exception {
-       RailwayParserImpl railwayParser = new RailwayParserImpl();
-       railwayParser.parseRailwayFile("./input/railway_def_1.txt");
+       RailwayParserImpl railwayParserImpl = new RailwayParserImpl();
+       railwayParserImpl.parseRailwayFile("./input/railway_def_1.txt");
        
-       RouteParserImpl routeParser = new RouteParserImpl();
-       routeParser.parseRouteFile("./input/route_def_1.txt");
+       RouteParserImpl routeParserImpl = new RouteParserImpl();
+       routeParserImpl.parseRouteFile("./input/route_def_1.txt");
+       
+       ScheduleParserImpl scheduleParserImpl = new ScheduleParserImpl();
+       scheduleParserImpl.parseScheduleFile("./input/schedule_def_1.txt");
+       
+       System.out.println("\n\n------- PRINTING REPORT ---------");
+       TrainSystemReport.printIntersectionReport();
+       TrainSystemReport.printCollisionReport(2);
     }
     
     
