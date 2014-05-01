@@ -28,6 +28,7 @@ public class Train {
 		return trainID;
 	}
 
+	//@ requires trainID!=null;
 	//@ assignable this.trainID;
 	//@ ensures this.trainID==trainID;
 	public void setTrainID(String trainID) {
@@ -38,6 +39,7 @@ public class Train {
 		return route;
 	}
 
+	//@ requires route!=null;
 	//@ assignable this.route;
 	//@ ensures this.route==route;
 	public void setRoute(ArrayList<TrackNodeArrivalTime> route) {
@@ -48,6 +50,7 @@ public class Train {
 		return direction;
 	}
 
+	//@ requires direction!=null;
 	//@ assignable this.direction;
 	//@ ensures this.direction==direction;
 	public void setDirection(TrainDirection direction) {

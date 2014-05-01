@@ -56,6 +56,7 @@ public class TrackNode {
 		return id;
 	}
 
+	//@ requires id!=null;
 	//@ assignable this.id;
 	//@ ensures this.id==id;
 	public void setId(String id) {
@@ -66,6 +67,7 @@ public class TrackNode {
 		return name;
 	}
 
+	//@ requires name!=null;
 	//@ assignable this.name;
 	//@ ensures this.name==name;
 	public void setName(String name) {
@@ -76,6 +78,7 @@ public class TrackNode {
 		return type;
 	}
 
+	//@ requires type!=null;
 	//@ assignable this.type;
 	//@ ensures this.type==type;
 	public void setType(TrackNodeType type) {
@@ -86,6 +89,7 @@ public class TrackNode {
 		return connectedLeftNodes;
 	}
 
+	//@ requires connectedLeftNodes!=null;
 	//@ assignable this.connectedLeftNodes;
 	//@ ensures this.connectedLeftNodes==connectedLeftNodes;
 	public void setConnectedLeftNodes(ArrayList<TrackNode> connectedLeftNodes) {
@@ -96,6 +100,7 @@ public class TrackNode {
 		return connectedRightNodes;
 	}
 
+	//@ requires connectedRightNodes!=null;
 	//@ assignable this.connectedRightNodes;
 	//@ ensures this.connectedRightNodes==connectedRightNodes;
 	public void setConnectedRightNodes(ArrayList<TrackNode> connectedRightNodes) {
@@ -116,6 +121,7 @@ public class TrackNode {
 		return passingTrainsSet;
 	}
 
+	//@ requires passingTrainsSet!=null;
 	//@ assignable this.passingTrainsSet;
 	//@ ensures this.passingTrainsSet==passingTrainsSet;
 	public void setPassingTrainsSet(HashSet<String> passingTrainsSet) {
@@ -126,6 +132,7 @@ public class TrackNode {
 		return arrivalTimeSchedule;
 	}
 
+	//@ requires arrivalTimeSchedule!=null;
 	//@ assignable this.arrivalTimeSchedule;
 	//@ ensures this.arrivalTimeSchedule==arrivalTimeSchedule;
 	public void setArrivalTimeSchedule(ArrayList<TrainArrivalTime> arrivalTimeSchedule) {

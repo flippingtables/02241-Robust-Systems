@@ -48,7 +48,8 @@ public class ScheduleListenerImpl implements ScheduleListener, IRailwayNetworkUs
 		// TODO Auto-generated method stub
 
 	}
-
+	
+	//@ assignable network.trainMap;
 	public void enterTrain(TrainContext ctx) {
 		System.out.println("\nTRAINID:"+ctx.TRAINID());
 		curTrain = ctx.TRAINID().toString();
@@ -63,6 +64,7 @@ public class ScheduleListenerImpl implements ScheduleListener, IRailwayNetworkUs
 		}
 	}
 
+	//@ assignable network.trainMap;
 	public void exitTrain(TrainContext ctx) {
 		// TODO Auto-generated method stub
 		curTrain = "";
@@ -92,6 +94,7 @@ public class ScheduleListenerImpl implements ScheduleListener, IRailwayNetworkUs
 		System.out.println("PARTIAL ROUTE:"+ctx.getText());		
 	}
 
+	//@ assignable network.trainMap;
 	public void exitPartialroute(PartialrouteContext ctx) {
 		// TODO Auto-generated method stub
 		Train train = network.getTrain(curTrain);
@@ -108,6 +111,7 @@ public class ScheduleListenerImpl implements ScheduleListener, IRailwayNetworkUs
 		
 	}
 
+	//@ assignable network.trainMap;
 	public void enterSchedule(ScheduleContext ctx) {
 		// TODO Auto-generated method stub
 		Train train = network.getTrain(curTrain);

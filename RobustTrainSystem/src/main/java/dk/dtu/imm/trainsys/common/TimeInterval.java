@@ -27,6 +27,9 @@ public class TimeInterval {
 	 * @throws IllegalArgumentException
 	 *             if invalid (to is before from)
 	 */
+	
+	//@ assignable start,end;
+	//@ ensures start!=null && end!=null && end.isAfter(start);
 	public TimeInterval(LocalTime from, LocalTime to)
 			throws IllegalArgumentException {
 			this(from == null ? null : from.toDateTime(INSTANT), to == null ? null
@@ -44,6 +47,8 @@ public class TimeInterval {
 	 * @throws IllegalArgumentException
 	 *             - if start > end. start must be <= end
 	 */
+	//@ assignable this.start,this.end;
+	//@ ensures this.start!=null && this.end!=null && this.end.isAfter(this.start);
 	public TimeInterval(DateTime start, DateTime end)
 			throws IllegalArgumentException {
 		this.start = start;
@@ -53,45 +58,45 @@ public class TimeInterval {
 					"start must be less or equal to end");
 	}
 
-	public DateTime getStart() {
+	public /*@ pure @*/ DateTime getStart() {
 		return start;
 	}
 
-	public DateTime getEnd() {
+	public /*@ pure @*/ DateTime getEnd() {
 		return end;
 	}
 
-	public boolean isEndUndefined() {
+	public /*@ pure @*/ boolean isEndUndefined() {
 		return end == null;
 	}
 
-	public boolean isStartUndefined() {
+	public /*@ pure @*/ boolean isStartUndefined() {
 		return start == null;
 	}
 
-	public boolean isUndefined() {
+	public /*@ pure @*/ boolean isUndefined() {
 		return isEndUndefined() && isStartUndefined();
 	}
 
-	public boolean overlaps(TimeInterval other) {
+	public /*@ pure @*/  boolean overlaps(TimeInterval other) {
 		return (start == null || (other.end == null || start
 				.isBefore(other.end)))
 				&& (end == null || (other.start == null || other.start
 						.isBefore(end)));
 	}
 
-	public boolean contains(TimeInterval other) {
+	public /*@ pure @*/  boolean contains(TimeInterval other) {
 		return ((start != null && other.start != null && !start
 				.isAfter(other.start)) || (start == null))
 				&& ((end != null && other.end != null && !other.end
 						.isAfter(end)) || (end == null));
 	}
 
-	public boolean contains(LocalTime other) {
+	public /*@ pure @*/ boolean contains(LocalTime other) {
 		return contains(other == null ? null : other.toDateTime(INSTANT));
 	}
 
-	public boolean containsEnd(DateTime other) {
+	public /*@ pure @*/ boolean containsEnd(DateTime other) {
 		if (other == null) {
 			return end == null;
 		} else {
@@ -100,7 +105,7 @@ public class TimeInterval {
 		}
 	}
 
-	public boolean contains(DateTime other) {
+	public /*@ pure @*/ boolean contains(DateTime other) {
 		if (other == null) {
 			return start == null;
 		} else {
@@ -110,6 +115,7 @@ public class TimeInterval {
 	}
 
 	@Override
+	// @ ensures \result != null && !(\result.length() == 0);
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("TimeInterval");

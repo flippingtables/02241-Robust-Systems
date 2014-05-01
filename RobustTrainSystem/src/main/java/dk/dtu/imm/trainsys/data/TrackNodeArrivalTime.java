@@ -21,6 +21,7 @@ public class TrackNodeArrivalTime {
 		return trackNode;
 	}
 	
+	//@ requires trackNode!=null;
 	//@ assignable this.trackNode;
 	//@ ensures this.trackNode==trackNode;
 	public void setTrackNode(TrackNode trackNode) {
@@ -31,6 +32,7 @@ public class TrackNodeArrivalTime {
 		return time;
 	}
 	
+	//@ requires time!=null;
 	//@ assignable this.time;
 	//@ ensures this.time==time;
 	public void setTime(DateTime time) {

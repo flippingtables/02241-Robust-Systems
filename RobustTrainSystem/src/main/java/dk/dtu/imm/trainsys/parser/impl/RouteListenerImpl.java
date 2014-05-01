@@ -47,6 +47,7 @@ public class RouteListenerImpl implements RouteListener, IRailwayNetworkUser {
 
 	}
 
+	//@ assignable network.trainMap;
 	public void enterTrain(TrainContext ctx) {
 		System.out.println("\nTRAINID:"+ctx.TRAINID());
 		curTrain = ctx.TRAINID().toString();
@@ -86,6 +87,7 @@ public class RouteListenerImpl implements RouteListener, IRailwayNetworkUser {
 		
 	}
 
+	//@ assignable network.trainMap;
 	public void enterPartialroute(PartialrouteContext ctx) {
 		System.out.println("PARTIALROUTE:"+ctx.ID());
 		Train train = network.getTrain(curTrain);
@@ -165,6 +167,7 @@ public class RouteListenerImpl implements RouteListener, IRailwayNetworkUser {
 		}
 	}
 
+	//@ assignable network.trainMap;
 	public void exitPartialroute(PartialrouteContext ctx) {
 		// TODO Auto-generated method stub
 		//meet a stop, set direction to any

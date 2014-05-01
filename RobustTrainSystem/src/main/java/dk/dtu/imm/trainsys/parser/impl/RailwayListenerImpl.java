@@ -50,6 +50,10 @@ public class RailwayListenerImpl implements RailwayListener, IRailwayNetworkUser
 		
 	}
 
+	
+    //@ public normal_behavior
+
+	//@ assignable network.trackNodeMap;
 	public void enterConnect(ConnectContext ctx) {
 		// TODO Auto-generated method stub
 		System.out.println("Connect:"+ctx.ID(0)+","+ctx.ID(1));
@@ -76,6 +80,7 @@ public class RailwayListenerImpl implements RailwayListener, IRailwayNetworkUser
 		
 	}
 
+	//@ assignable network.trackNodeMap;
 	public void enterStation(StationContext ctx) {
 		// TODO Auto-generated method stub
 		System.out.println("Station:"+ctx.STRING()+","+ctx.ID());
@@ -105,6 +110,7 @@ public class RailwayListenerImpl implements RailwayListener, IRailwayNetworkUser
 		
 	}
 
+	//@ assignable network.trackNodeMap;
 	public void enterEnd(EndContext ctx){
 		// TODO Auto-generated method stub
 		System.out.println("END:"+ctx.ID());
