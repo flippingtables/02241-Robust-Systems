@@ -11,7 +11,7 @@ import dk.dtu.imm.trainsys.parser.impl.RailwayParserImpl;
 import dk.dtu.imm.trainsys.parser.impl.RouteParserImpl;
 import dk.dtu.imm.trainsys.parser.impl.ScheduleParserImpl;
 
-public class RailwayBadSpecsTest implements IRailwayNetworkUser {
+public class RailwayBadSpecsTestSyntax implements IRailwayNetworkUser {
 	RailwayParserImpl railwayParserImpl = new RailwayParserImpl();
 	
 	@Before
