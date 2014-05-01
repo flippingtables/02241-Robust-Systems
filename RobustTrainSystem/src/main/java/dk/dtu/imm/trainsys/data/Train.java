@@ -9,49 +9,62 @@ import dk.dtu.imm.trainsys.common.TrainDirection;
 
 public class Train {
 
-	private String trainID;
-	private ArrayList<TrackNodeArrivalTime> route = new ArrayList<TrackNodeArrivalTime>();
-	private TrainDirection direction = TrainDirection.ANY;
+	private /*@ spec_public @*/ String trainID;
+	private /*@ spec_public @*/ ArrayList<TrackNodeArrivalTime> route = new ArrayList<TrackNodeArrivalTime>();
+	private /*@ spec_public @*/ TrainDirection direction = TrainDirection.ANY;
 	
 	//CONSTRUCTOR
+    //@ public normal_behavior
+	//@ requires trainID!=null;
+	//@ assignable this.trainID;
+	//@ ensures this.trainID==trainID;
 	public Train(String trainID) {
 		// TODO Auto-generated constructor stub
 		this.trainID=trainID;
 	}
 
 	//GETTER AND SETTER
-	public String getTrainID() {
+	public /*@ pure @*/ String getTrainID() {
 		return trainID;
 	}
 
+	//@ assignable this.trainID;
+	//@ ensures this.trainID==trainID;
 	public void setTrainID(String trainID) {
 		this.trainID = trainID;
 	}
 
-	public ArrayList<TrackNodeArrivalTime> getRoute() {
+	public /*@ pure @*/ ArrayList<TrackNodeArrivalTime> getRoute() {
 		return route;
 	}
 
+	//@ assignable this.route;
+	//@ ensures this.route==route;
 	public void setRoute(ArrayList<TrackNodeArrivalTime> route) {
 		this.route = route;
 	}
 
-	public TrainDirection getDirection() {
+	public /*@ pure @*/ TrainDirection getDirection() {
 		return direction;
 	}
 
+	//@ assignable this.direction;
+	//@ ensures this.direction==direction;
 	public void setDirection(TrainDirection direction) {
 		this.direction = direction;
 	}
 
 	
 	//MISC METHOD
+	//@ assignable this.route;
+	//@ ensures route.size()==\old(route.size()+1);
 	public void addToRoute(TrackNode node, DateTime time){
 		TrackNodeArrivalTime arrival = new TrackNodeArrivalTime(node,time);
 		route.add(arrival);		
 	}
 
 	@Override
+	// @ ensures \result != null && !(\result.length() == 0);
 	public String toString() {
 		return "Train [trainID=" + trainID + ", route=" + route
 				+  "]";

@@ -9,17 +9,40 @@ import org.joda.time.DateTime;
 import dk.dtu.imm.trainsys.common.TrackNodeType;
 
 public class TrackNode {
-	private String id="";
-	private String name="";
-	private TrackNodeType type=TrackNodeType.STATION;
-	private ArrayList<TrackNode> connectedLeftNodes = new ArrayList<TrackNode>();
-	private ArrayList<TrackNode> connectedRightNodes = new ArrayList<TrackNode>();
-	private HashSet<String> passingTrainsSet = new HashSet<String>();
-	private ArrayList<TrainArrivalTime> arrivalTimeSchedule = new ArrayList<TrainArrivalTime>();
+	
+	/*@ public invariant 
+	       (type==TrackNodeType.STATION && connectedLeftNodes.size()<=1 && connectedRightNodes.size()<=1)
+	    || (type==TrackNodeType.STATION && end && (connectedLeftNodes.size()==0 || connectedRightNodes.size()==0)) 
+		|| (type==TrackNodeType.SWITCH && !end && connectedLeftNodes.size()<=1 && connectedRightNodes.size()<=2)
+		|| (type==TrackNodeType.SWITCH && !end && connectedLeftNodes.size()<=2 && connectedRightNodes.size()<=1);
+		@*/
+	
+	private /*@ spec_public @*/ String id="";
+	private /*@ spec_public @*/ String name="";
+	private /*@ spec_public @*/ TrackNodeType type=TrackNodeType.STATION;
+	private /*@ spec_public @*/ ArrayList<TrackNode> connectedLeftNodes = new ArrayList<TrackNode>();
+	private /*@ spec_public @*/ ArrayList<TrackNode> connectedRightNodes = new ArrayList<TrackNode>();
+	private /*@ spec_public @*/ HashSet<String> passingTrainsSet = new HashSet<String>();
+	private /*@ spec_public @*/ ArrayList<TrainArrivalTime> arrivalTimeSchedule = new ArrayList<TrainArrivalTime>();
 		//map from train to listOfTime it is going to pass this station
-	private boolean end = false;
-
-	//CONSTRUCTOR
+	private /*@ spec_public @*/ boolean end = false;
+	
+    public static void main(String[] arg) {
+    	TrackNode n = new TrackNode("a","abc",TrackNodeType.STATION);
+    	n.setId("test");
+    	TrackNode b = new TrackNode("b","basas",TrackNodeType.STATION);
+    	n.addConnectedRightNode(b);
+    	System.out.println(n);
+    }
+	
+	/*------------------------   CONSTRUCTOR ------------------------*/
+    //@ public normal_behavior
+	//@ requires !id.equals("");
+	//@ requires !name.equals("");
+	//@ assignable this.id, this.name, this.type;
+	//@ ensures this.id==id;
+	//@ ensures this.name==name;
+	//@ ensures this.type==type; 
 	public TrackNode(String id, String name, TrackNodeType type) {
 		this.id = id;
 		this.name=name;
@@ -27,102 +50,137 @@ public class TrackNode {
 	}
 	
 
-	//GETTER SETTER
-	public String getId() {
+	/*------------------------   GETTER AND SETTER ------------------------*/
+
+	public /*@ pure @*/ String getId() {
 		return id;
 	}
 
+	//@ assignable this.id;
+	//@ ensures this.id==id;
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	public String getName() {
+	public /*@ pure @*/ String getName() {
 		return name;
 	}
 
+	//@ assignable this.name;
+	//@ ensures this.name==name;
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public TrackNodeType getType() {
+	public /*@ pure @*/ TrackNodeType getType() {
 		return type;
 	}
 
+	//@ assignable this.type;
+	//@ ensures this.type==type;
 	public void setType(TrackNodeType type) {
 		this.type = type;
 	}
 
-	public ArrayList<TrackNode> getConnectedLeftNodes() {
+	public /*@ pure @*/ ArrayList<TrackNode> getConnectedLeftNodes() {
 		return connectedLeftNodes;
 	}
 
+	//@ assignable this.connectedLeftNodes;
+	//@ ensures this.connectedLeftNodes==connectedLeftNodes;
 	public void setConnectedLeftNodes(ArrayList<TrackNode> connectedLeftNodes) {
 		this.connectedLeftNodes = connectedLeftNodes;
 	}
 
-	public ArrayList<TrackNode> getConnectedRightNodes() {
+	public /*@ pure @*/ ArrayList<TrackNode> getConnectedRightNodes() {
 		return connectedRightNodes;
 	}
 
+	//@ assignable this.connectedRightNodes;
+	//@ ensures this.connectedRightNodes==connectedRightNodes;
 	public void setConnectedRightNodes(ArrayList<TrackNode> connectedRightNodes) {
 		this.connectedRightNodes = connectedRightNodes;
 	}
 	
-	public boolean isEnd() {
+	public /*@ pure @*/ boolean isEnd() {
 		return end;
 	}
 
+	//@ assignable this.end;
+	//@ ensures this.end==end;
 	public void setEnd(boolean end) {
 		this.end = end;
 	}
 	
-	public HashSet<String> getPassingTrainsSet() {
+	public /*@ pure @*/ HashSet<String> getPassingTrainsSet() {
 		return passingTrainsSet;
 	}
 
-
+	//@ assignable this.passingTrainsSet;
+	//@ ensures this.passingTrainsSet==passingTrainsSet;
 	public void setPassingTrainsSet(HashSet<String> passingTrainsSet) {
 		this.passingTrainsSet = passingTrainsSet;
 	}
 
-
-	public ArrayList<TrainArrivalTime> getArrivalTimeSchedule() {
+	public /*@ pure @*/ ArrayList<TrainArrivalTime> getArrivalTimeSchedule() {
 		return arrivalTimeSchedule;
 	}
 
-
+	//@ assignable this.arrivalTimeSchedule;
+	//@ ensures this.arrivalTimeSchedule==arrivalTimeSchedule;
 	public void setArrivalTimeSchedule(ArrayList<TrainArrivalTime> arrivalTimeSchedule) {
 		this.arrivalTimeSchedule = arrivalTimeSchedule;
 	}
 	
 	//MISC METHOD
+	
+    //@ public normal_behavior
+	//@ assignable connectedLeftNodes;
+	//@ requires node!=null;
+	//@ ensures connectedLeftNodes.size()==\old(connectedLeftNodes.size()+1);
 	public void addConnectedLeftNode(TrackNode node){
-		this.connectedLeftNodes.add(node);
+		connectedLeftNodes.add(node);
 	}
+	
+    //@ public normal_behavior
+	//@ assignable connectedRightNodes;
+	//@ requires node!=null;
+	//@ ensures connectedRightNodes.size()==\old(connectedRightNodes.size()+1);
 	public void addConnectedRightNode(TrackNode node){
-		this.connectedRightNodes.add(node);
+		connectedRightNodes.add(node);
 	}
+	
+    //@ public normal_behavior
+	//@ assignable passingTrainsSet;
+	//@ requires trainID!=null && !trainID.isEmpty();
+	//@ ensures passingTrainsSet.size()==\old(passingTrainsSet.size()+1);
 	public void addToPassingTrainsSet(String trainID){
-		
 		passingTrainsSet.add(trainID);
 	}
+	
+    //@ public normal_behavior
+	//@ assignable arrivalTimeSchedule;
+	//@ requires trainID!=null && !trainID.isEmpty() && arrivalTime!=null;
+	//@ ensures arrivalTimeSchedule.size()==\old(arrivalTimeSchedule.size()+1);
 	public void addToArrivalTimeSchedule(String trainID,DateTime arrivalTime){
 		arrivalTimeSchedule.add(new TrainArrivalTime(trainID,arrivalTime));
 	}
 
-
-	@Override
+	// @ ensures \result != null && !(\result.length() == 0);
 	public String toString() {
-		
 		StringBuffer leftNodesIDList=new StringBuffer();
 		Iterator<TrackNode> leftIter = connectedLeftNodes.iterator();
+
 		while(leftIter.hasNext()){
 			TrackNode leftNode = leftIter.next();
-			leftNodesIDList.append(leftNode.getId());
-			if(leftIter.hasNext()){
-				leftNodesIDList.append(",");
+			if(leftNode!=null){
+				leftNodesIDList.append(leftNode.getId());
+				if(leftIter.hasNext()){
+					leftNodesIDList.append(",");
+				}
 			}
 		}
+
 		StringBuffer rightNodesIDList=new StringBuffer();
 		Iterator<TrackNode> rightIter = connectedRightNodes.iterator();
 		while(rightIter.hasNext()){
@@ -132,57 +190,11 @@ public class TrackNode {
 				rightNodesIDList.append(",");
 			}
 		}
-		
+
 		return "TrackNode id=" + id 
 		+ ", left=[" + leftNodesIDList.toString()+"]"
 		+ ", right=[" + rightNodesIDList.toString() + "]"
 		+ (this.isEnd()?",isEnd":"");		
 	}
-
-	public boolean isValidTrackNode(){
-		if(connectedLeftNodes.size()>2){
-			//RAILWAY_CONSTRAINT_6 - An end must be a station
-			throw new RuntimeException(this.id+" is invalid node with 3 or more connectedLeftNodes");
-		}
-		if(connectedRightNodes.size()>2){
-			throw new RuntimeException(this.id+" is invalid node with 3 or more connectedRightNodes");
-		}		
-		if(type==TrackNodeType.STATION){
-			//RAILWAY_CONSTRAINT_8
-			if(end){
-				if(!(connectedLeftNodes.size()==0||connectedRightNodes.size()==0)){
-					throw new RuntimeException(this.id+" is end point but has connected nodes on both ends");
-				}
-			}
-			
-			if(connectedLeftNodes.size()==0||connectedRightNodes.size()==0){
-				//RAILWAY_CONSTRAINT_12
-				//END STATION
-				if(!end){
-					throw new RuntimeException(this.id+" is invalid node without end point");
-				}
-			}
-			//RAILWAY_CONSTRAINT_1
-			if(connectedLeftNodes.size()>1||connectedRightNodes.size()>1){
-				//NON END STATION
-				throw new RuntimeException(this.id+" is a station but has 2 connections at one of the side");
-			}
-		}
-		if(type==TrackNodeType.SWITCH){
-			//SWITCH MUST BE A 1-2 or 2-1 connections
-			if(!((connectedLeftNodes.size()==1&&connectedRightNodes.size()==2)  
-				|| (connectedRightNodes.size()==1&&connectedLeftNodes.size()==2))	
-			){
-				throw new RuntimeException(this.id+" is a switch but has invalid number of connections");
-			}
-		}
-		return true;
-	}
-
-
-	
-
-
-
 
 }

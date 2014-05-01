@@ -30,6 +30,8 @@ public class RailwayNetwork{
 	public HashMap<String,TrackNode> getTrackNodeMap() {
 		return trackNodeMap;
 	}
+	
+	
 	public void addToTrackNodeMap(TrackNode node){
 		this.trackNodeMap.put(node.getId(), node);
 	}	
@@ -57,39 +59,6 @@ public class RailwayNetwork{
 		rightNode.addConnectedLeftNode(leftNode);
 	}
 	
-	//RAILWAY_CONSTRAINT_2 - all track nodes are reachable from anywhere
-	//TODO: write this method
-	public boolean isAllTrackNodeReachable(){
-		HashSet<TrackNode> nodeSet=new HashSet<TrackNode>();
-		for(TrackNode node:trackNodeMap.values()){
-			nodeSet.add(node);
-		}
-		return true;
-	}
 	
-	//RAILWAY_CONSTRAINT_3 - has at least 1 connection
-	public boolean hasAtLeast1Connection(){
-		for(TrackNode node:trackNodeMap.values()){
-			if(node.getConnectedLeftNodes().size()>0 || node.getConnectedRightNodes().size()>0){
-				return true;
-			}
-		}
-		throw new RuntimeException("network does not have satisfy minimum of one connection");
-	}
-	
-	//RAILWAY_CONSTRAINT_4 - has at least 2 stations
-	public boolean hasAtLeast2Stations(){
-		int numOfStation=0;
-		for(TrackNode node:trackNodeMap.values()){
-			if(node.getType()==TrackNodeType.STATION){
-				numOfStation++;
-			}
-			if(numOfStation>=2){
-				return true;
-			}
-		}
-		throw new RuntimeException("network does not have satisfy minimum of 2 stations");
-	}
-
 	
 }

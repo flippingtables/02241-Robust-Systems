@@ -7,12 +7,14 @@ import org.joda.time.ReadableInstant;
 public class TimeInterval {
 
 	public static final ReadableInstant INSTANT = null; // null means today
-	// public static final ReadableInstant INSTANT = new Instant(0); // this
-	// means 1st jan 1970
 
-	private final DateTime start;
-	private final DateTime end;
+	private /*@ spec_public @*/ DateTime start;
+	private /*@ spec_public @*/ DateTime end;
 
+	public static void main(String[] args){
+		TimeInterval t = new TimeInterval();
+	}
+	
 	public TimeInterval() {
 		this((LocalTime) null, null);
 	}

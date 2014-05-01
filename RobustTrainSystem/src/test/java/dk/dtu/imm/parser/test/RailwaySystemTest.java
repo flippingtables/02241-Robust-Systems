@@ -4,6 +4,7 @@ package dk.dtu.imm.parser.test;
 import org.junit.Test;
 
 import dk.dtu.imm.trainsys.common.IRailwayNetworkUser;
+import dk.dtu.imm.trainsys.common.NetworkValidityChecker;
 import dk.dtu.imm.trainsys.common.TrainSystemReport;
 import dk.dtu.imm.trainsys.parser.impl.RailwayParserImpl;
 import dk.dtu.imm.trainsys.parser.impl.RouteParserImpl;
@@ -13,8 +14,11 @@ public class RailwaySystemTest implements IRailwayNetworkUser{
 	
 	
     public static void main(String[] args) throws Exception {
+        
        RailwayParserImpl railwayParserImpl = new RailwayParserImpl();
        railwayParserImpl.parseRailwayFile("./input/railway_def_1.txt");
+       
+       NetworkValidityChecker.checkNetworkValidity(network);
        
        RouteParserImpl routeParserImpl = new RouteParserImpl();
        routeParserImpl.parseRouteFile("./input/route_def_1.txt");

@@ -61,7 +61,6 @@ public class RailwayParserImpl implements IRailwayNetworkUser {
 		walker.walk(new RailwayListenerImpl(), tree);
 		HashMap<String, TrackNode> trackNodeMap = network.getTrackNodeMap();
 		for (TrackNode node : trackNodeMap.values()) {
-			node.isValidTrackNode();
 			System.out.println(node);
 		}
 	}
