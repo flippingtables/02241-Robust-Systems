@@ -1,0 +1,4 @@
+# Constraint 2) The times given must not imply jumps between track points. 
+
+TRAIN1 h 10:00 b 10:05 l 10:10
+TRAIN2 h 12:00 b 12:05 k 12:10 STOP h 12:15

@@ -1,0 +1,4 @@
+# Constraint 4) An entry in a train route file must begin with a String (see previous definition of String).
+
+TRAIN1 h b l
+42 h b k

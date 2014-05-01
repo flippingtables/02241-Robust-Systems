@@ -1,0 +1,4 @@
+# Constraint 3) A train route cannot contain any jumps; ALTERNATIVELY It must be possible at any point on a train route to get to any other point on the train route.
+
+TRAIN1 h b l
+TRAIN2 h k

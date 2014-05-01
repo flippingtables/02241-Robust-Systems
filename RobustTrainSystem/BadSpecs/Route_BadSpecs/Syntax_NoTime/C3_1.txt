@@ -1,0 +1,5 @@
+# Constraint 3) A train ID must not appear in more than 1 entry.
+
+TRAIN1 h b l
+TRAIN2 h b k
+TRAIN2 k b h
