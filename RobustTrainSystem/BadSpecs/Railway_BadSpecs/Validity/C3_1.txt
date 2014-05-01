@@ -1,8 +1,0 @@
-# Constraint 3) A railway system must have at least 1 track.
-
-STAT Hellerup h
-STAT Lyngby l
-STAT Klampenborg k
-END h
-END l
-END k

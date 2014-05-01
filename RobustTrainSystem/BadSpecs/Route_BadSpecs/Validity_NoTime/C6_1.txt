@@ -1,4 +1,0 @@
-# Constraint 6) A train route where the train is at the left tip of the ‘Y’ and wants to go to the right tip of the ‘Y’, it can not stop at the fork node, it must go to at least the bottom of the ‘Y’ then stop, reverse and then go to the right tip of ‘Y’.
-
-TRAIN1 h b l
-TRAIN2 h b k STOP b STOP

@@ -1,4 +1,0 @@
-# Constraint 2) Time must be given as 1 or 2 integers (xx), followed by a colon, followed by 1 or 2 integers (yy).
-
-TRAIN1 h 10:00 b 10:05 l 10:10
-TRAIN2 h a2:00 b 12:05 k 12:10

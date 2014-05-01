@@ -1,4 +1,0 @@
-# Constraint 1) A train must have at least 2 entries.
-
-TRAIN1 h b l
-TRAIN2 h

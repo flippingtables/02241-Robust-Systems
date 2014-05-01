@@ -1,9 +1,0 @@
-# Constraint 1) Railway tracks can only be of the following kinds {straight, switch, end}.
-
-STAT Hellerup h
-STAT Lyngby l
-CONN h b
-CONN b l
-CONN
-END h
-END l

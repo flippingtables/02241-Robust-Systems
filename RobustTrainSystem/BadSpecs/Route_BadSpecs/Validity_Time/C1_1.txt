@@ -1,4 +1,0 @@
-# Constraint 1) A train can only occupy a single track point at a time; ALTERNATIVELY For a given train, there must not be multiple track points where it must appear at the same time.
-
-TRAIN1 h 10:00 b 10:00 l 10:10
-TRAIN2 h 12:00 b 12:05 k 12:10

@@ -1,1 +1,0 @@
-Assuming a guard time of 30 minutes

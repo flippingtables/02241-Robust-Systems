@@ -59,6 +59,12 @@ public class RailwayNetwork{
 		rightNode.addConnectedLeftNode(leftNode);
 	}
 	
+	public void clearNetwork(){
+		instance=null;
+		trackNodeMap.clear();
+		trainMap.clear();
+	}
+	
 	
 	
 }
