@@ -1,0 +1,4 @@
+# Constraint 2) A train route must pass at least 2 stations.
+
+TRAIN1 h b l
+TRAIN2 h b

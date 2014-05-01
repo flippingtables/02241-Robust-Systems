@@ -1,0 +1,12 @@
+# Constraint 8) Stations must be placed on track points that exist.
+
+STAT Hellerup h
+STAT Lyngby l
+STAT Klampenborg k
+STAT NoSuch x
+CONN h b
+CONN b l
+CONN b k
+END h
+END l
+END k

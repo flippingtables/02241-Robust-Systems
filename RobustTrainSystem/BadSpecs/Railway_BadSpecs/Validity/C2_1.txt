@@ -1,0 +1,16 @@
+# Constraint 2) All tracks must be reachable from all other tracks (i.e. the whole railway system must be connected).
+
+STAT Hellerup h
+STAT Lyngby l
+STAT Klampenborg k
+STAT XenoStation x
+STAT YesStation y
+CONN h b
+CONN b l
+CONN b k
+CONN x y
+END h
+END l
+END k
+END x
+END y

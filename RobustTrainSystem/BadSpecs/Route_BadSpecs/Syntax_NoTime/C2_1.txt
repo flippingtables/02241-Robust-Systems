@@ -1,0 +1,5 @@
+# Constraint 2) There must be no duplicate entries.
+
+TRAIN1 h b l
+TRAIN2 h b k
+TRAIN2 h b k

@@ -1,0 +1,4 @@
+# Constraint 3) Consecutive times cannot be given for the same node; ALTERNATIVELY Each new time must direct the train to a node different than the previous time.
+
+TRAIN1 h 10:00 b 10:05 l 10:10
+TRAIN2 h 12:00 b 12:05 k 12:10 k 12:15

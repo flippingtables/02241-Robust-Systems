@@ -1,0 +1,11 @@
+# Constraint 6) Following CONN and String must be a String.
+
+STAT Hellerup h
+STAT Lyngby l
+STAT Klampenborg k
+CONN h b
+CONN b 42
+CONN b k
+END h
+END l
+END k

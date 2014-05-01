@@ -1,0 +1,4 @@
+# Constraint 4) Train route must contain a ‘stop’ if the train is to reverse direction.
+
+TRAIN1 h b l
+TRAIN2 h b k b

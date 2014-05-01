@@ -1,0 +1,12 @@
+# Constraint 9) Ends can only be placed on track points that do not connect to other track points.
+
+STAT Hellerup h
+STAT Lyngby l
+STAT Klampenborg k
+CONN h b
+CONN b l
+CONN b k
+END h
+END l
+END k
+END x

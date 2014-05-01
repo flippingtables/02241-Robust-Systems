@@ -1,0 +1,11 @@
+# Constraint 2) Following STAT must be a String.
+
+STAT Hellerup h
+STAT Lyngby42 l
+STAT &Klampenborg k
+CONN h b
+CONN b l
+CONN b k
+END h
+END l
+END k

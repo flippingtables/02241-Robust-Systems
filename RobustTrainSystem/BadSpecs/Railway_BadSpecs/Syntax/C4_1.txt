@@ -1,0 +1,11 @@
+# Constraint 4) Nothing may follow STAT, String, and String.
+
+STAT Hellerup h
+STAT Lyngby l
+STAT Klampenborg k x
+CONN h b
+CONN b l
+CONN b k
+END h
+END l
+END k
