@@ -64,6 +64,9 @@ public class TrainSystemReport implements IRailwayNetworkUser {
 					System.out.println("Node "+node.getId()+": has possible collision between train "
 							+ prevTrain +"("+prevArrival.toString(dateTimeFormatter)+") and "+
 							curTrain+"("+curArrival.toString(dateTimeFormatter)+")");
+					throw new RuntimeException("Node "+node.getId()+": has possible collision between train "
+							+ prevTrain +"("+prevArrival.toString(dateTimeFormatter)+") and "+
+							curTrain+"("+curArrival.toString(dateTimeFormatter)+")");
 				}
 				
 				index++;
